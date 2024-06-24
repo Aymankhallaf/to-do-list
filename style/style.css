@@ -1,0 +1,55 @@
+:root {
+    font-size: 16px;
+    --grey: #f8f8f8;
+    --black: hwb(0 0% 100% / 0.7);
+    --yellow: #ffcd00;
+    --orange: #ff8356;
+    --red: #f54d42;
+    --brown: #5f0a07;
+}
+
+
+@media screen and (min-width: 768px) {
+    :root {
+        font-size: 24;
+    }
+  }
+
+body {
+    color: var(--black);
+    background-color: var(--grey);
+
+    font-family: "Rubik", Arial, Helvetica, sans-serif;
+}
+
+/* RESET  */
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+a:link,
+a:visited {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+/*home page*/
+.main-title {
+    font-size: 1.25rem;
+    text-align: center;
+    color: var(--brown);
+    font-weight: 700;
+}
