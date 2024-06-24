@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
     rel="stylesheet">
-    <link href="/style/style.css" rel="stylesheet" />
+  <link href="/style/style.css" rel="stylesheet" />
 
   <title>TO DO LIST</title>
 
@@ -18,13 +18,24 @@
 <body>
   <main>
     <h1 class="main-title">TO DO LIST</h1>
-    <form>
+    <!-- <form>
       <label for="task_title"> new task </label>
       <input type="task_title" id="task_title" name="task_title">
       <button type="submit">add</button>
-    </form>
+    </form> -->
 
-    <h2>Today’s tasks</h2>
+    <div class="today-task-container">
+    <h2 class="today-task">Today’s tasks</h2>
+    <div class="sort-task">
+      <label class="sort-task-label" for="sort_task">sort by</label>
+      <select name="sort_task" id="sort_task">
+        <option value="created date">created date</option>
+        <option class="sort-task-option" alue="periorty">periorty</option>
+        <option value="cat">planing <data value=""></data></option>
+      </select>
+    </div>
+  </div>
+
     <ol>
       <li>
         <label for="done"> done </label>
