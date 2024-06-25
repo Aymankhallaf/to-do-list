@@ -13,11 +13,3 @@ try {
     die('Unable to connect to the database.
 ' . $e->getMessage());
 }
-
-$query = $dbCo->prepare("SELECT title_task, planning_date FROM task;");
-
-$query->execute();
-
-while ($task_title= $query->fetch()) {
-    echo '<li>'.$task_title['title_task'].'</li>';
-    }
