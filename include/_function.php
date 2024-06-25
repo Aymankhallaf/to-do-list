@@ -19,56 +19,42 @@ function showLsTasks(array $lsttasks)
       </li>';
     }
     return $li;
-}
-
-
-/* insert request */
-// insert into task (title_task, creation_date) values ('Mnteger ac neque. Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus. In sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, ', '2024-01-06 19:13:47');
-
-// $insert_task = $dbCo->prepare("insert into task 
-// (title_task, creation_date) values 
-// (:task_title, CURRENT_DATE())");
-
-
-//     $insert_task->execute([
-//         ':task_title' => 'Mnteger ac neque. Duis bibendum. Morbi non quam nec dui luctus rutrum.'
-//     ]);
+};
 
 
 
-<?php
-$postTaskTitle = $_POST['task_title'];
-$_SESSION['myToken'] = md5(uniqid(mt_rand(), true));
-var_dump($_SESSION['myToken']);
-//
-if (!empty($_POST)) {
-  if (isset($_SERVER) && str_contains($_SERVER['HTTP_REFERER'], 'http://localhost:8080')) {
-    var_dump("comes from our server connection");
-    if (
-      isset($postTaskTitle) && strlen($postTaskTitle) > 0
-    ) {
+function AddTask(string $postTaskTitle, $dbCo)
+{
+    //verify server
+    if (isset($_SERVER) && str_contains($_SERVER['HTTP_REFERER'], 'http://localhost:8080')) {
+        var_dump("comes from our server connection");
+        
+        if (isset(($_SESSION['myToken'])) && isset($_POST['myToken']) && $_SESSION['myToken'] === $_POST['myToken']) {
 
-      $insertTask = $dbCo->prepare("INSERT INTO task 
-    (title_task, creation_date) VALUES 
-    (:task_title, CURRENT_DATE())");
+            //verify the length of the task
+            if (
+                isset($postTaskTitle) && strlen($postTaskTitle) > 0
+            ) {
 
-
-      $bindValue = ([
-        ':task_title' => htmlspecialchars($postTaskTitle)
-      ]);
-
-      $isnsertOK = $insertTask->execute($bindValue);
-      $nb = $insertTask->rowCount();
-      var_dump($nb);
+                $insertTask = $dbCo->prepare("INSERT INTO task 
+        (title_task, creation_date) VALUES 
+        (:task_title, CURRENT_DATE())"); 
 
 
+                $bindValue = ([
+                    ':task_title' => htmlspecialchars($postTaskTitle)
+                ]);
 
-      if (strlen($postTaskTitle) > 255) {
-        var_dump("it is too long, plz write a shorter task");
-      }
-    }
-  }
-}
+                $isnsertOK = $insertTask->execute($bindValue);
+                $nb = $insertTask->rowCount();
+                var_dump($nb);
 
-?>
-    
+
+
+                if (strlen($postTaskTitle) > 255) {
+                    var_dump("it is too long, plz write a shorter task");
+                }
+            }
+        }
+    }}
+

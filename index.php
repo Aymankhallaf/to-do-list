@@ -2,13 +2,27 @@
 include 'include/_connection.php';
 include 'include/_function.php';
 
+
+//start session
 session_start();
+//create session token
+if (!isset(($_SESSION['myToken']))) {
 
+  $_SESSION['myToken'] = md5(uniqid(mt_rand(), true));
+}
+
+
+if (!empty($_POST)) {
+  var_dump($_POST);
+  //call the function to insert task to data base
+  $postTaskTitle = $_POST['task_title'];
+  AddTask($postTaskTitle, $dbCo);
+};
+
+
+//show tasks by creation date order
 $query = $dbCo->prepare("SELECT title_task FROM task ORDER BY creation_date DESC;");
-
 $query->execute();
-
-
 
 ?>
 
@@ -33,10 +47,12 @@ $query->execute();
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
     <form class="border-container write-task-form" method="post">
+      <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <label class="hide write-task-title" for="write-task-label">new task</label>
       <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task_title" name="task_title"></textarea>
       <button type="submit"><img src="/img/add.svg" alt="add task"></button>
     </form>
+
 
     <h2 class="today-task">Today’s tasks</h2>
 
@@ -47,9 +63,7 @@ $query->execute();
       <?php
       echo (showLsTasks($query->fetchAll()));
       ?>
-      <input type="hidden" name="token" value="<?= $_SESSION['myToken']?>">
-      <?php var_dump($_SESSION['myToken']); ?>
-      
+
     </ol>
 
 
