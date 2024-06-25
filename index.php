@@ -2,14 +2,13 @@
 include 'include/_connection.php';
 include 'include/_function.php';
 
+session_start();
 
-$query = $dbCo->prepare("SELECT title_task FROM task;");
+$query = $dbCo->prepare("SELECT title_task FROM task ORDER BY creation_date DESC;");
 
 $query->execute();
 
-// while ($task_title= $query->fetch()) {
-//     echo '<li>'.$task_title['title_task'].'</li>';
-//     }
+
 
 ?>
 
@@ -33,12 +32,11 @@ $query->execute();
 <body>
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
-    <form class="border-container write-task-form">
-      <label class="hide" for="write-task-title"> new task </label>
-      <input type="text" class="write-task-title task-title" id="task_title" name="task_title">
+    <form class="border-container write-task-form" method="post">
+      <label class="hide write-task-title" for="write-task-label">new task</label>
+      <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task_title" name="task_title"></textarea>
       <button type="submit"><img src="/img/add.svg" alt="add task"></button>
     </form>
-
 
     <h2 class="today-task">Today’s tasks</h2>
 
@@ -49,28 +47,9 @@ $query->execute();
       <?php
       echo (showLsTasks($query->fetchAll()));
       ?>
-
-      <li class="task-lst-item">
-        <label class="hide task-lst-item-done" for="done">done </label>
-        <input class="task-lst-item-checkbox" type="checkbox" id="done" name="done">
-        <input type="text" size="50" name="task">show tasks list by name</input>
-        <button class="task-edit" type="submit"><img src="/img/edit.svg" aria-hidden="true" alt="edit"></button>
-        <button class="task-delete" type="submit"><img src="/img/delete.svg" aria-hidden="true" alt="delete"></button>
-      </li>
-      <li class="task-lst-item">
-        <label class="hide task-lst-item-done" for="done"> done </label>
-        <input class="task-lst-item-checkbox" type="checkbox" id="done" name="done">
-        <p>show tasks list by name</p>
-        <button class="task-edit" type="submit"><img src="/img/edit.svg" alt="edit task"></button>
-        <button class="task-delete" type="submit"><img src="/img/delete.svg" alt="delete task"></button>
-      </li>
-      <li class="task-lst-item">
-        <label class="hide task-lst-item-done" for="done"> done </label>
-        <input class="task-lst-item-checkbox" type="checkbox" id="done" name="done">
-        <p>show tasks list by name</p>
-        <button class="task-edit" type="submit"><img src="/img/edit.svg" alt="edit"></button>
-        <button class="task-delete" type="submit"><img src="/img/delete.svg" alt="delete"></button>
-      </li>
+      <input type="hidden" name="token" value="<?= $_SESSION['myToken']?>">
+      <?php var_dump($_SESSION['myToken']); ?>
+      
     </ol>
 
 

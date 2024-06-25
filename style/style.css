@@ -89,9 +89,14 @@ input[type=text] {
 
 }
 
-.write-task:input[type=text] {
+.write-task-title {
+    width: 100%;
+    height: auto;
+    padding: .5rem;
     border: none;
     height: 2rem;
+    font-size: 1rem;
+    font-family: "Rubik";
     color: #5f0a07;
 }
 
