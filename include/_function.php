@@ -155,7 +155,13 @@ function addTask(string $postTaskTitle, $dbCo)
 
 
 
-function archiveTasks($dbCo)
+/**
+ * Archieves task "set terminted task to true(it won't be shown in home page)"
+ *
+ * @param [type] $dbCo connection
+ * @return void
+ */
+function archiveTask($dbCo)
 {
 
     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
@@ -180,4 +186,29 @@ function redirectToHeader(string $url, string $flag = ''): void
     // var_dump('REDIRECT ' . $url, $flag);
     header('Location: ' . $url);
     exit;
+}
+
+
+
+function editTaskTitle($dbCo, $taskTitle)
+{
+
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+
+
+    // UPDATE `task` SET `title_task` = 'modify un task' WHERE `task`.`id_task` = 24; 
+        $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;");
+
+        $isInsertOk = $query->execute(
+            [':task_id' => intval($_GET['id_task']),
+            ':task_title' => htmlspecialchars($taskTitle)]);
+
+        if ($isInsertOk) {
+            $_SESSION['msg'] = 'archive_ok';
+        } else {
+            $_SESSION['error'] = 'archive_ko';
+        }
+
+        redirectToHeader("index.php");
+    }
 }

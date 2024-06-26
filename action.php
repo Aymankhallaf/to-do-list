@@ -21,7 +21,7 @@ if ($_REQUEST['action'] === 'insert') {
 } 
 
 else if ($_REQUEST['action'] === 'archive') {
-    archiveTasks($dbCo);
+    archiveTask($dbCo);
 }
 
 

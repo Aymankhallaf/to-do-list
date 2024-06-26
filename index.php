@@ -24,6 +24,8 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
 <html lang="en">
 
 <head>
+  <h1 class="main-title">TO DO LIST</h1>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,28 +35,28 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
 
   <title>TO DO LIST</title>
 
-
 </head>
 
 <body>
 
   <?php
 
-      
-echo getHtmlMessages($messages);
 
-echo getHtmlErrors($errors);
+  echo getHtmlMessages($messages);
+
+  echo getHtmlErrors($errors);
 
   ?>
 
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
-    <form class="border-container write-task-form" action="action.php" method="post">
-      <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
+
+    <form id="add-task" class="border-container write-task-form" action="action.php" method="post">
+      <!-- <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="insert">
       <label class="hide write-task-title" for="write-task-label">new task</label>
       <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task_title" name="task_title" required></textarea>
-      <button type="submit"><img src="/img/add.svg" alt="add task"></button>
+      <button type="submit"><img src="/img/add.svg" alt="add task"></button> -->
     </form>
 
 
@@ -76,6 +78,18 @@ echo getHtmlErrors($errors);
 
   <footer>
     <p>© 2024 To Do List</p>
+  </footer>
+
+  <template id="add-title-task-template">
+    <form class="border-container write-task-form" action="action.php" method="post">
+      <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
+      <input type="hidden" name="action" value="insert">
+      <label class="hide write-task-title" for="write-task-label">new task</label>
+      <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
+      <button type="submit"><img src="/img/add.svg" alt="add task"></button>
+    </form>
+  </template>
+  <script type="module" src="js/script.js"></script>
 </body>
 
 </html>
