@@ -1,10 +1,12 @@
 <?php
 session_start();
 include 'include/_connection.php';
+include 'include/_config.php';
 include 'include/_function.php';
 
-verifyServer();
-//start session
+
+var_dump(($_GET));
+
 //create session token
 if (!isset(($_SESSION['myToken']))) {
 
@@ -12,14 +14,7 @@ if (!isset(($_SESSION['myToken']))) {
 }
 
 
-
-if (!empty($_POST)) {
-  //call the function to insert task to database
-  $postTaskTitle = $_POST['task_title'];
-  addTask($postTaskTitle, $dbCo);
-};
-
-$nonTerminatedTasks = getDataFromDAtabase($dbCo);
+$nonTerminatedTasks = getDataFromDatabase($dbCo);
 
 
 ?>
@@ -44,30 +39,19 @@ $nonTerminatedTasks = getDataFromDAtabase($dbCo);
 <body>
 
   <?php
-  $errors = [
-    'csrf' => 'Votre session est invalide.',
-    'referer' => 'D\'où venez vous ?',
 
-  ];
-  if (isset($_SESSION['error'])) {
-    echo '<p class="notif-error">' . $errors[$_SESSION['error']] . '</p>';
-    unset($_SESSION['error']);
-  }
+      
+echo getHtmlMessages($messages);
 
-  $messages = [
-    'archive_ok' => 'The task has been archieved',
-    'archive_ko' => 'Archieved faild'
-  ];
-  if (isset($_SESSION['msg'])) {
-    echo '<p class="notif-success">' . $messages[$_SESSION['msg']] . '</p>';
-    unset($_SESSION['msg']);
-  }
+echo getHtmlErrors($errors);
+
   ?>
 
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
-    <form class="border-container write-task-form" method="post">
+    <form class="border-container write-task-form" action="action.php" method="post">
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
+      <input type="hidden" name="action" value="insert">
       <label class="hide write-task-title" for="write-task-label">new task</label>
       <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task_title" name="task_title"></textarea>
       <button type="submit"><img src="/img/add.svg" alt="add task"></button>

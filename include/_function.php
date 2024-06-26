@@ -1,19 +1,81 @@
 <?php
 
-
-// $errors = [
-//     'csrf' => 'Votre session est invalide.',
-//     'referer' => 'D\'où venez vous ?',
-//    
-// ];
-// $messages = [
-//     'archive_ok' => 'The task has been archieved',
-//     'archive_ko' => 'Archieved faild'
-// ];
-
-function showMsg()
+/**
+ * Get HTML to display errors available in user SESSION
+ *
+ * @param array $errorsList - Available errors list
+ * @return string HTMl to display errors
+ */
+function getHtmlErrors(array $errorsList): string
 {
+    if (!empty($_SESSION['errorsList'])) {
+        $errors = $_SESSION['errorsList'];
+        unset($_SESSION['errorsList']);
+        return '<ul class="notif-error">'
+            . implode(array_map(fn ($e) => '<li>' . $errorsList[$e] . '</li>', $errors))
+            . '</ul>';
+    }
+    return '';
 }
+
+/**
+ * Get HTML to display messages available in user SESSION
+ *
+ * @param array $messagesList - Available Messages list
+ * @return string HTML to display messages
+ */
+function getHtmlMessages(array $messagesList): string
+{
+    if (isset($_SESSION['msg'])) {
+        $m = $_SESSION['msg'];
+        unset($_SESSION['msg']);
+        return '<p class="notif-success">' . $messagesList[$m] . '</p>';
+    }
+    return '';
+}
+
+/**
+ * Add a new error message to display on next page. 
+ *
+ * @param string $errorMsg - Error message to display
+ * @return void
+ */
+function addError(string $errorMsg): void
+{
+    if (!isset($_SESSION['errorsList'])) {
+        $_SESSION['errorsList'] = [];
+    }
+    $_SESSION['errorsList'][] = $errorMsg;
+}
+
+/**
+ * verify HTTP_REFERER
+ *
+ * @return void
+ */
+function verifyServer(string $redirectUrl = 'index.php'): void
+{
+    global $globalUrl;
+
+    if (!isset($_SERVER['HTTP_REFERER']) || !str_contains($_SERVER['HTTP_REFERER'], $globalUrl)) {
+        addError('referer');
+        redirectToHeader($redirectUrl);
+    }
+}
+
+/**
+ * verify session token
+ *
+ * @return void
+ */
+function verifyToken(string $redirectUrl = 'index.php'): void
+{
+    if (!isset($_SESSION['myToken']) || !isset($_REQUEST['myToken']) || $_SESSION['myToken'] !== $_REQUEST['myToken']) {
+        addError('csrf');
+        redirectToHeader($redirectUrl);
+    }
+}
+
 
 /**
  * show tasks by creation date order without Showing terminated tasks.
@@ -21,7 +83,7 @@ function showMsg()
  * @param [type] $dbCo the object dbco who mange the database connection
  * @return object  of tasks
  */
-function getDataFromDAtabase($dbCo)
+function getDataFromDatabase($dbCo)
 {
     $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 ORDER BY creation_date DESC;");
     $query->execute();
@@ -51,66 +113,31 @@ function showLsTasks(array $lsttasks)
 };
 
 
-
 function addTask(string $postTaskTitle, $dbCo)
 {
-    //verify server
-    if (isset($_SERVER) && str_contains($_SERVER['HTTP_REFERER'], 'http://localhost:8080')) {
-        var_dump("comes from our server connection");
+    //verify the length of the task
+    if (
+        isset($_POST['task_title']) && strlen($_POST['task_title']) > 0
+    ) {
 
-        if (isset(($_SESSION['myToken'])) && isset($_POST['myToken']) && $_SESSION['myToken'] === $_POST['myToken']) {
-
-            //verify the length of the task
-            if (
-                isset($postTaskTitle) && strlen($postTaskTitle) > 0
-            ) {
-
-                $insertTask = $dbCo->prepare("INSERT INTO task 
+        $insertTask = $dbCo->prepare("INSERT INTO task 
         (title_task, creation_date) VALUES 
         (:task_title, CURRENT_DATE())");
 
 
-                $bindValue = ([
-                    ':task_title' => htmlspecialchars($postTaskTitle)
-                ]);
+        $bindValue = ([
+            ':task_title' => htmlspecialchars($postTaskTitle)
+        ]);
 
-                $isnsertOK = $insertTask->execute($bindValue);
-                $nb = $insertTask->rowCount();
+        $isInsertOk = $insertTask->execute($bindValue);
 
-                if (strlen($postTaskTitle) > 255) {
-                    var_dump("it is too long, plz write a shorter task");
-                }
-            }
+        if ($isInsertOk) {
+            $_SESSION['msg'] = 'insert_ok';
+        } else {
+            $_SESSION['error'] = 'insert_ko';
         }
-    }
-}
-
-
-/**
- * verify HTTP_REFERER
- *
- * @return void
- */
-function verifyServer()
-{
-    if (!isset($_SERVER['HTTP_REFERER']) || !str_contains($_SERVER['HTTP_REFERER'], 'http://localhost:8080')) {
-        $_SESSION['error'] = 'referer';
-        redirectToHeader("index.php,1");
-    }
-}
-
-/**
- * verify session token
- *
- * @return void
- */
-function verifyToken():void
-{
-    if (!isset($_SESSION['myToken']) || !isset($_REQUEST['myToken']) || $_SESSION['myToken'] !== $_REQUEST['myToken']) {
-        $_SESSION['error'] = 'csrf';
-        redirectToHeader("index.php", 2);
-    }
-}
+        redirectToHeader('index.php');
+    }}
 
 
 
@@ -122,6 +149,7 @@ function archiveTasks($dbCo)
         $query = $dbCo->prepare("UPDATE task SET is_terminate = '1' WHERE id_task = :task_id;");
 
         $isInsertOk = $query->execute(['task_id' => intval($_GET['id_task'])]);
+
         if ($isInsertOk) {
             $_SESSION['msg'] = 'archive_ok';
         } else {
@@ -134,7 +162,7 @@ function archiveTasks($dbCo)
 
 function redirectToHeader(string $url, string $flag = ''): void
 {
-    var_dump('REDIRECT ' . $url, $flag);
-    //  header('Location: ' . $url);
+    // var_dump('REDIRECT ' . $url, $flag);
+     header('Location: ' . $url);
     exit;
 }
