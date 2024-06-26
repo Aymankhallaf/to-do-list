@@ -105,7 +105,7 @@ function showLsTasks(array $lsttasks)
         $li .= '<li class="border-container task-lst-item">
         <label class="hide task-lst-item-done" for="done"> done </label>
         <input role="checkbox if the task has been done" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1">
-        <p>' . $task['title_task'] . '</p><a href="?action=archive&id_task=' . $task['id_task'] . '" ><img aria-hidden="true" src="/img/archive.svg" alt="archive task"></a><button class="task-edit" type="submit" role="edit-task"><img aria-hidden="true" src="/img/edit.svg" alt="edit task"></button>
+        <p>' . $task['title_task'] . '</p><a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken']. '" ><img aria-hidden="true" src="/img/archive.svg" alt="archive task"></a><button class="task-edit" type="submit" role="edit-task"><img aria-hidden="true" src="/img/edit.svg" alt="edit task"></button>
         <button class="task-delete" type="submit" role="delete-task"><img aria-hidden="true" src="/img/delete.svg" alt="delete task"></button>
       </li>';
     }
@@ -113,9 +113,17 @@ function showLsTasks(array $lsttasks)
 };
 
 
+/**
+ * add task to data base
+ *
+ * @param string $postTaskTitle
+ * @param [type] $dbCo
+ * @return void
+ */
 function addTask(string $postTaskTitle, $dbCo)
 {
     //verify the length of the task
+
     if (
         isset($_POST['task_title']) && strlen($_POST['task_title']) > 0
     ) {
@@ -144,7 +152,7 @@ function addTask(string $postTaskTitle, $dbCo)
 function archiveTasks($dbCo)
 {
 
-    if (!empty($_GET) && isset($_GET['action']) && $_GET['action'] === 'archive' && isset($_GET['id_task']) && is_numeric($_GET['id_task'])) {
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
         $query = $dbCo->prepare("UPDATE task SET is_terminate = '1' WHERE id_task = :task_id;");
 
@@ -155,7 +163,8 @@ function archiveTasks($dbCo)
         } else {
             $_SESSION['error'] = 'archive_ko';
         }
-        redirectToHeader("index.php", 3);
+
+        redirectToHeader("index.php");
     }
 }
 

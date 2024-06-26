@@ -5,7 +5,7 @@ include 'include/_config.php';
 include 'include/_function.php';
 
 
-var_dump(($_GET));
+var_dump($_GET);
 
 //create session token
 if (!isset(($_SESSION['myToken']))) {
@@ -53,7 +53,7 @@ echo getHtmlErrors($errors);
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="insert">
       <label class="hide write-task-title" for="write-task-label">new task</label>
-      <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task_title" name="task_title"></textarea>
+      <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task_title" name="task_title" required></textarea>
       <button type="submit"><img src="/img/add.svg" alt="add task"></button>
     </form>
 
