@@ -1,10 +1,10 @@
 /**
- * add task title form (from template ).
+ * Shows editing task title form (from template ).
  * @param {string} taskTitle the task title. 
  * @param {string} injectedId the id tag of the target injection location.
  */
-export function addTasktitle(taskTitle,injectedId) {
-    const template = document.getElementById("add-title-task-template")
+export function editTasktitle(taskTitle,injectedId) {
+    const template = document.getElementById("update-title-task-template")
     let clone = document.importNode(template.content, true);
     clone.getElementById("task-title-textarea").innerText = taskTitle;
     const injected=document.getElementById(injectedId)
@@ -12,3 +12,20 @@ export function addTasktitle(taskTitle,injectedId) {
 
 }
 
+/**
+ * listen to click to edit btns when click empty container(li) add template(form)
+ * @param {array} editButtons lst of editing btn. 
+ */
+export function listenToEditBtn(editButtons){
+
+    editButtons.forEach(b => {
+        b.addEventListener("click", (e) => {
+            let li = e.currentTarget.parentNode;
+            let txt = li.querySelector(".js-task-title_txt").innerText;
+            li.innerText = '';
+            editTasktitle(txt, li.dataset.id);
+        });
+    
+    });
+    
+}

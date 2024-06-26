@@ -89,12 +89,10 @@ input[type=text] {
 
 }
 
-.write-task-title {
+.write-task-title, .edit-task-title  {
     width: 100%;
-    height: auto;
     padding: .5rem;
     border: none;
-    height: 2rem;
     font-size: 1rem;
     font-family: "Rubik";
     color: #5f0a07;
@@ -126,3 +124,12 @@ input[type=text] {
     color: red;
 }
 
+.edit-task-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+
+}

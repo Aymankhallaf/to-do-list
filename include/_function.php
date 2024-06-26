@@ -49,6 +49,21 @@ function addError(string $errorMsg): void
 }
 
 /**
+ * redirect to url and 
+ *
+ * @param string $url the target url
+ * @param string $flag a flag to differentiate the error.
+ * @return void
+ */
+function redirectToHeader(string $url, string $flag = ''): void
+{
+    // var_dump('REDIRECT ' . $url, $flag);
+    header('Location: ' . $url);
+    exit;
+}
+
+
+/**
  * verify HTTP_REFERER
  *
  * @return void
@@ -120,11 +135,10 @@ function showLsTasks(array $lsttasks)
 /**
  * add task to data base
  *
- * @param string $postTaskTitle
- * @param [type] $dbCo
+ * @param [type] $dbCo connection
  * @return void
  */
-function addTask(string $postTaskTitle, $dbCo)
+function addTask($dbCo)
 {
     //verify the length of the task
 
@@ -138,7 +152,7 @@ function addTask(string $postTaskTitle, $dbCo)
 
 
         $bindValue = ([
-            ':task_title' => htmlspecialchars($postTaskTitle)
+            ':task_title' => htmlspecialchars($_POST['task_title'])
         ]);
 
         $isInsertOk = $insertTask->execute($bindValue);
@@ -180,41 +194,40 @@ function archiveTask($dbCo)
 }
 
 
+
+
+
 /**
- * redirect to url and 
+ * add task to data base
  *
- * @param string $url the target url
- * @param string $flag a flag to differentiate the error.
+ * @param string $postTaskTitle
+ * @param [type] $dbCo
  * @return void
  */
-function redirectToHeader(string $url, string $flag = ''): void
+function editTasktitle(string $postTaskTitle, $dbCo)
 {
-    // var_dump('REDIRECT ' . $url, $flag);
-    header('Location: ' . $url);
-    exit;
-}
+    //verify the length of the task
+
+    if (
+        isset($_POST['task_title']) && strlen($_POST['task_title']) > 0
+    ) {
+
+        $insertTask = $dbCo->prepare("INSERT INTO task 
+        (title_task, creation_date) VALUES 
+        (:task_title, CURRENT_DATE())");
 
 
+        $bindValue = ([
+            ':task_title' => htmlspecialchars($postTaskTitle)
+        ]);
 
-function editTaskTitle($dbCo, $taskTitle)
-{
-
-    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
-
-
-    // UPDATE `task` SET `title_task` = 'modify un task' WHERE `task`.`id_task` = 24; 
-        $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;");
-
-        $isInsertOk = $query->execute(
-            [':task_id' => intval($_GET['id_task']),
-            ':task_title' => htmlspecialchars($taskTitle)]);
+        $isInsertOk = $insertTask->execute($bindValue);
 
         if ($isInsertOk) {
-            $_SESSION['msg'] = 'archive_ok';
+            $_SESSION['msg'] = 'insert_ok';
         } else {
-            $_SESSION['error'] = 'archive_ko';
+            $_SESSION['error'] = 'insert_ko';
         }
-
-        redirectToHeader("index.php");
+        redirectToHeader('index.php');
     }
 }

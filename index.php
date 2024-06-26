@@ -49,9 +49,13 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
 
-    <div id="add-task-container">
-
-    </div>
+    <form class="border-container write-task-form" action="action.php" method="post">
+      <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
+      <input type="hidden" name="action" value="insert">
+      <label class="hide" for="write-task-label">new task</label>
+      <textarea rows="auto" cols="100%" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
+      <button type="submit"><img src="/img/add.svg" alt="add task"></button>
+    </form>
 
 
     <h2 class="today-task">Today’s tasks</h2>
@@ -74,19 +78,16 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
     <p>© 2024 To Do List</p>
   </footer>
 
-  <template id="add-title-task-template">
-    <form class="border-container write-task-form" action="action.php" method="post">
+  <template id="update-title-task-template">
+  <form class="edit-task-form" action="action.php" method="post">
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
-      <input type="hidden" name="action" value="insert">
-      <label class="hide write-task-title" for="write-task-label">new task</label>
-      <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
-      <button type="submit"><img src="/img/add.svg" alt="add task"></button>
-
+      <input type="hidden" name="action" value="edit">
+      <label class="hide" for="edit-task-label">new task</label>
+      <textarea rows="auto" cols="100%" type="text" class="edit-task-title" id="task-title-textarea" name="task_title" required></textarea>
+      <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
     </form>
   </template>
-  <template id="update-title-task-template">
-    <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
-  </template>
+
   <script type="module" src="scripts/script.js"></script>
 
 </body>

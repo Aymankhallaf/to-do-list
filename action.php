@@ -17,7 +17,7 @@ verifyToken();
 if ($_REQUEST['action'] === 'insert') {
 
     //call the function to insert task to database
-    addTask($_POST['task_title'], $dbCo);
+    addTask($dbCo);
 } 
 
 else if ($_REQUEST['action'] === 'archive') {
