@@ -24,8 +24,6 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
 <html lang="en">
 
 <head>
-  <h1 class="main-title">TO DO LIST</h1>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,13 +49,9 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
 
-    <form id="add-task" class="border-container write-task-form" action="action.php" method="post">
-      <!-- <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
-      <input type="hidden" name="action" value="insert">
-      <label class="hide write-task-title" for="write-task-label">new task</label>
-      <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task_title" name="task_title" required></textarea>
-      <button type="submit"><img src="/img/add.svg" alt="add task"></button> -->
-    </form>
+    <div id="add-task-container" >
+
+    </div>
 
 
     <h2 class="today-task">Today’s tasks</h2>
@@ -89,7 +83,8 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
       <button type="submit"><img src="/img/add.svg" alt="add task"></button>
     </form>
   </template>
-  <script type="module" src="js/script.js"></script>
+  <script type="module" src="scripts/script.js"></script>
+
 </body>
 
 </html>

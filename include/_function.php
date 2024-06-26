@@ -110,7 +110,7 @@ function showLsTasks(array $lsttasks)
         <img aria-hidden="true" src="/img/archive.svg" alt="archive task">
         </a><a href="action.php?action=edit_task_title&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" >
 <img aria-hidden="true" src="/img/edit.svg" alt="edit task">
-</a></button>
+</a>
         <button class="task-delete" type="submit" role="delete-task"><img aria-hidden="true" src="/img/delete.svg" alt="delete task"></button>
       </li>';
     }
