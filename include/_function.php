@@ -1,6 +1,21 @@
 <?php
 
+
 /**
+ * show tasks by creation date order without Showing terminated tasks.
+ *
+ * @param [type] $dbCo the object dbco who mange the database connection
+ * @return object  of tasks
+ */
+function getDataFromDAtabase($dbCo)
+{
+    $query = $dbCo->prepare("SELECT title_task FROM task WHERE is_terminate = 0 ORDER BY creation_date DESC;");
+    $query->execute();
+    return $query;
+}
+
+/**
+ * 
  * show all the tasks in an array
  *
  * @param array $lsttasks a list of tasks
@@ -23,7 +38,7 @@ function showLsTasks(array $lsttasks)
 
 
 
-function AddTask(string $postTaskTitle, $dbCo)
+function addTask(string $postTaskTitle, $dbCo)
 {
     //verify server
     if (isset($_SERVER) && str_contains($_SERVER['HTTP_REFERER'], 'http://localhost:8080')) {
@@ -38,7 +53,7 @@ function AddTask(string $postTaskTitle, $dbCo)
 
                 $insertTask = $dbCo->prepare("INSERT INTO task 
         (title_task, creation_date) VALUES 
-        (:task_title, CURRENT_DATE())"); 
+        (:task_title, CURRENT_DATE())");
 
 
                 $bindValue = ([
@@ -56,5 +71,8 @@ function AddTask(string $postTaskTitle, $dbCo)
                 }
             }
         }
-    }}
+    }
+}
+
+
 

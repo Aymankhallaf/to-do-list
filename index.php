@@ -16,13 +16,12 @@ if (!empty($_POST)) {
   var_dump($_POST);
   //call the function to insert task to data base
   $postTaskTitle = $_POST['task_title'];
-  AddTask($postTaskTitle, $dbCo);
+  addTask($postTaskTitle, $dbCo);
 };
 
+$nonTerminatedTasks = getDataFromDAtabase($dbCo);
+var_dump($nonTerminatedTasks);
 
-//show tasks by creation date order
-$query = $dbCo->prepare("SELECT title_task FROM task ORDER BY creation_date DESC;");
-$query->execute();
 
 ?>
 
@@ -61,7 +60,7 @@ $query->execute();
     <ol class="task-lst">
 
       <?php
-      echo (showLsTasks($query->fetchAll()));
+      echo (showLsTasks($nonTerminatedTasks->fetchAll()));
       ?>
 
     </ol>
