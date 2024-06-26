@@ -49,7 +49,7 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
 
-    <div id="add-task-container" >
+    <div id="add-task-container">
 
     </div>
 
@@ -81,7 +81,11 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
       <label class="hide write-task-title" for="write-task-label">new task</label>
       <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
       <button type="submit"><img src="/img/add.svg" alt="add task"></button>
+
     </form>
+  </template>
+  <template id="update-title-task-template">
+    <textarea rows="auto" cols="auto" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
   </template>
   <script type="module" src="scripts/script.js"></script>
 

@@ -102,15 +102,14 @@ function showLsTasks(array $lsttasks)
 
     $li = '';
     foreach ($lsttasks as $task) {
-        $li .= '<li class="border-container task-lst-item">
+        $li .= '<li data-id='.$task['id_task'].' id='.$task['id_task'].' class="border-container task-lst-item">
         <label class="hide task-lst-item-done" for="done"> done </label>
         <input role="checkbox if the task has been done" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1">
-        <p>' . $task['title_task'] . '</p>
+        <p class="js-task-title_txt">' . $task['title_task'] . '</p>
         <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" >
         <img aria-hidden="true" src="/img/archive.svg" alt="archive task">
-        </a><a href="action.php?action=edit_task_title&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" >
-<img aria-hidden="true" src="/img/edit.svg" alt="edit task">
-</a>
+        </a><button id='.$task['id_task'].' class="task-edit js-edit-task-title" type="submit" role="edit-task"><img aria-hidden="true" src="/img/edit.svg" alt="edit task"></button>
+
         <button class="task-delete" type="submit" role="delete-task"><img aria-hidden="true" src="/img/delete.svg" alt="delete task"></button>
       </li>';
     }
@@ -181,6 +180,13 @@ function archiveTask($dbCo)
 }
 
 
+/**
+ * redirect to url and 
+ *
+ * @param string $url the target url
+ * @param string $flag a flag to differentiate the error.
+ * @return void
+ */
 function redirectToHeader(string $url, string $flag = ''): void
 {
     // var_dump('REDIRECT ' . $url, $flag);
