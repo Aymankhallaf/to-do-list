@@ -13,8 +13,8 @@ function showLsTasks(array $lsttasks)
     foreach ($lsttasks as $task) {
         $li .= '<li class="border-container task-lst-item">
         <label class="hide task-lst-item-done" for="done"> done </label>
-        <input role="checkbox if the task has been done" class="task-lst-item-checkbox" type="checkbox" id="done" name="done">
-        <p>' . $task['title_task'] . '</p> <button class="task-edit" type="submit" role="edit-task"><img aria-hidden="true" src="/img/edit.svg" alt="edit task"></button>
+        <input role="checkbox if the task has been done" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1">
+        <p>' . $task['title_task'] . '</p> <button class="task-archive" type="submit" role="archive-task"><img aria-hidden="true" src="/img/archive.svg" alt="archive task"></button><button class="task-edit" type="submit" role="edit-task"><img aria-hidden="true" src="/img/edit.svg" alt="edit task"></button>
         <button class="task-delete" type="submit" role="delete-task"><img aria-hidden="true" src="/img/delete.svg" alt="delete task"></button>
       </li>';
     }
@@ -28,7 +28,7 @@ function AddTask(string $postTaskTitle, $dbCo)
     //verify server
     if (isset($_SERVER) && str_contains($_SERVER['HTTP_REFERER'], 'http://localhost:8080')) {
         var_dump("comes from our server connection");
-        
+
         if (isset(($_SESSION['myToken'])) && isset($_POST['myToken']) && $_SESSION['myToken'] === $_POST['myToken']) {
 
             //verify the length of the task
