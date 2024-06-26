@@ -23,3 +23,8 @@ if ($_REQUEST['action'] === 'insert') {
 else if ($_REQUEST['action'] === 'archive') {
     archiveTasks($dbCo);
 }
+
+
+else if ($_REQUEST['action'] === 'edit_task_title'){
+    // UPDATE `task` SET `title_task` = 'modify un task' WHERE `task`.`id_task` = 24; 
+}

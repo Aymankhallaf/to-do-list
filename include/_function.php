@@ -105,7 +105,12 @@ function showLsTasks(array $lsttasks)
         $li .= '<li class="border-container task-lst-item">
         <label class="hide task-lst-item-done" for="done"> done </label>
         <input role="checkbox if the task has been done" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1">
-        <p>' . $task['title_task'] . '</p><a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken']. '" ><img aria-hidden="true" src="/img/archive.svg" alt="archive task"></a><button class="task-edit" type="submit" role="edit-task"><img aria-hidden="true" src="/img/edit.svg" alt="edit task"></button>
+        <p>' . $task['title_task'] . '</p>
+        <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" >
+        <img aria-hidden="true" src="/img/archive.svg" alt="archive task">
+        </a><a href="action.php?action=edit_task_title&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" >
+<img aria-hidden="true" src="/img/edit.svg" alt="edit task">
+</a></button>
         <button class="task-delete" type="submit" role="delete-task"><img aria-hidden="true" src="/img/delete.svg" alt="delete task"></button>
       </li>';
     }
@@ -145,7 +150,8 @@ function addTask(string $postTaskTitle, $dbCo)
             $_SESSION['error'] = 'insert_ko';
         }
         redirectToHeader('index.php');
-    }}
+    }
+}
 
 
 
@@ -172,6 +178,6 @@ function archiveTasks($dbCo)
 function redirectToHeader(string $url, string $flag = ''): void
 {
     // var_dump('REDIRECT ' . $url, $flag);
-     header('Location: ' . $url);
+    header('Location: ' . $url);
     exit;
 }
