@@ -1,10 +1,10 @@
 <?php
+session_start();
 include 'include/_connection.php';
 include 'include/_function.php';
 
-
+verifyServer();
 //start session
-session_start();
 //create session token
 if (!isset(($_SESSION['myToken']))) {
 
@@ -12,15 +12,14 @@ if (!isset(($_SESSION['myToken']))) {
 }
 
 
+
 if (!empty($_POST)) {
-  var_dump($_POST);
-  //call the function to insert task to data base
+  //call the function to insert task to database
   $postTaskTitle = $_POST['task_title'];
   addTask($postTaskTitle, $dbCo);
 };
 
 $nonTerminatedTasks = getDataFromDAtabase($dbCo);
-var_dump($nonTerminatedTasks);
 
 
 ?>
@@ -43,6 +42,28 @@ var_dump($nonTerminatedTasks);
 </head>
 
 <body>
+
+  <?php
+  $errors = [
+    'csrf' => 'Votre session est invalide.',
+    'referer' => 'D\'où venez vous ?',
+
+  ];
+  if (isset($_SESSION['error'])) {
+    echo '<p class="notif-error">' . $errors[$_SESSION['error']] . '</p>';
+    unset($_SESSION['error']);
+  }
+
+  $messages = [
+    'archive_ok' => 'The task has been archieved',
+    'archive_ko' => 'Archieved faild'
+  ];
+  if (isset($_SESSION['msg'])) {
+    echo '<p class="notif-success">' . $messages[$_SESSION['msg']] . '</p>';
+    unset($_SESSION['msg']);
+  }
+  ?>
+
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
     <form class="border-container write-task-form" method="post">
