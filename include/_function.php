@@ -113,12 +113,12 @@ function verifyNbChars(int $maxNumber): void
 
 
 /**
- * show tasks by creation date order without Showing terminated tasks.
+ * get non terminated, non priority tasks order by creation date order.
  *
  * @param [type] $dbCo the object dbco who mange the database connection
  * @return object  of tasks
  */
-function getDataFromDatabase($dbCo)
+function getNterminatedNpriority($dbCo)
 {
     $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 ORDER BY creation_date DESC;");
     $query->execute();

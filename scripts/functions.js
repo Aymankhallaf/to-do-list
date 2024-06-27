@@ -63,8 +63,8 @@ export function dropAndDrop() {
         if (selected) {
             priorityOL.appendChild(selected);
             //get the number of index in ol starts with 0
-            let index = Array.prototype.indexOf.call(priorityOL.children, selected);
-            console.log(index);
+            let indexOlPriority = Array.prototype.indexOf.call(priorityOL.children, selected);
+            console.log(indexOlPriority);
             selected = null;
         }
     });
@@ -78,6 +78,9 @@ export function dropAndDrop() {
         e.preventDefault();
         if (selected) {
             todayOL.appendChild(selected);
+            //get the number of index in ol starts with 0
+            let indexOltoday = Array.prototype.indexOf.call(priorityOL.children, selected);
+            console.log("the tasks go to the bottom (-1)",indexOltoday);
             selected = null;
             console.log('Dropped into today tasks');
         }

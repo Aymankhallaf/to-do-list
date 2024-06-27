@@ -124,28 +124,7 @@ input[type="text"] {
     border: solid var(--yellow) 2px;
 }
 
-.today-task-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-/* sort task */
 
-.sort-task {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
-
-.sort-task-label {
-    color: var(--brown);
-}
-
-.sort-task-option {
-    padding: 0.5rem;
-    color: var(--brown);
-}
 
 /* .task-lst-item {
 

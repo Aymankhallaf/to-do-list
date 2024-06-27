@@ -14,7 +14,6 @@ if (!isset(($_SESSION['myToken']))) {
 }
 
 
-$nonTerminatedTasks = getDataFromDatabase($dbCo);
 
 
 ?>
@@ -65,20 +64,11 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
 
     </ol>
 
-    <div class="today-task-container">
       <h2 class="today-task">Today’s tasks</h2>
-      <div class="sort-task">
-        <label class="sort-task-label" for="sort_task">sort by</label>
-        <select name="sort_task" id="sort_task">
-          <option value="created date">created date</option>
-          <option class="sort-task-option" alue="periorty">periorty</option>
-          <option value="cat">planing <data value=""></data></option>
-        </select>
-      </div>
-    </div>
     <ol id="today-task-lst" class="task-lst">
 
       <?php
+      $nonTerminatedTasks = getNterminatedNpriority($dbCo);
       echo (showLsTasks($nonTerminatedTasks->fetchAll()));
       ?>
 
