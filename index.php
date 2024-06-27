@@ -81,10 +81,14 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
   <form class="edit-task-form" action="action.php" method="post">
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="edit">
+      <input class="js-task-id" type="hidden" name="task_id" value="">
       <textarea rows="auto" cols="100%" type="text" class="edit-task-title" id="task-title-textarea" name="task_title" required></textarea>
       <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
     </form>
   </template>
+
+
+
 
   <script type="module" src="scripts/script.js"></script>
 

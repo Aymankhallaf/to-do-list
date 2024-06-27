@@ -3,11 +3,12 @@
  * @param {string} taskTitle the task title. 
  * @param {string} injectedId the id tag of the target injection location.
  */
-export function editTasktitle(taskTitle,injectedId) {
+export function editTasktitle(taskTitle, injectedId) {
     const template = document.getElementById("update-title-task-template")
     let clone = document.importNode(template.content, true);
     clone.getElementById("task-title-textarea").innerText = taskTitle;
-    const injected=document.getElementById(injectedId)
+     clone.querySelector(".js-task-id").value = injectedId;
+    const injected = document.getElementById(injectedId)
     injected.appendChild(clone);
 
 }
@@ -16,7 +17,7 @@ export function editTasktitle(taskTitle,injectedId) {
  * listen to click to edit btns when click empty container(li) add template(form)
  * @param {array} editButtons lst of editing btn. 
  */
-export function listenToEditBtn(editButtons){
+export function listenToEditBtn(editButtons) {
 
     editButtons.forEach(b => {
         b.addEventListener("click", (e) => {
@@ -25,7 +26,7 @@ export function listenToEditBtn(editButtons){
             li.innerText = '';
             editTasktitle(txt, li.dataset.id);
         });
-    
+
     });
-    
+
 }

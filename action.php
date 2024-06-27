@@ -26,4 +26,5 @@ else if ($_REQUEST['action'] === 'archive') {
 
 
 else if ($_REQUEST['action'] === 'edit'){
-    editTasktitle($dbCo);}
+    editTasktitle($dbCo);
+}

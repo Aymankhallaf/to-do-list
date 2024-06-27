@@ -95,18 +95,22 @@ function verifyToken(string $redirectUrl = 'index.php'): void
 
 
 
-   /**
-    *  verify the length of the task
-    *
-    * @param integer $maxNumber the maximum lenght of characters.
-    * @return void
-    */
-   function verifyNbChar(int $maxNumber):void{
-       if (strlen($_POST['task_title'] ) > $maxNumber || strlen($_POST['task_title']) < 0 ) {
-        addError('nb_char_ko');
-        redirectToHeader('index.php');
-     }
-   }
+/**
+ *  verify the length of the task
+ *
+ * @param integer $maxNumber the maximum lenght of characters.
+ * @return void
+ */
+function verifyNbChars(int $maxNumber): void
+{
+    if (isset($_REQUEST['task_title'])) {
+
+        if (strlen($_REQUEST['task_title']) > $maxNumber || strlen($_REQUEST['task_title']) < 0) {
+            addError('nb_char_ko');
+            redirectToHeader('index.php');
+        }
+    }
+}
 
 
 /**
@@ -158,28 +162,27 @@ function showLsTasks(array $lsttasks)
 function addTask($dbCo)
 {
 
-    verifyNbChar(255);
-        $insertTask = $dbCo->prepare("INSERT INTO task 
+    verifyNbChars(255);
+    $insertTask = $dbCo->prepare("INSERT INTO task 
         (title_task, creation_date) VALUES 
         (:task_title, CURRENT_DATE())");
 
 
-        $bindValue = ([
-            ':task_title' => htmlspecialchars($_POST['task_title'])
-        ]);
+    $bindValue = ([
+        ':task_title' => htmlspecialchars($_REQUEST['task_title'])
+    ]);
 
-        $isInsertOk = $insertTask->execute($bindValue);
+    $isInsertOk = $insertTask->execute($bindValue);
 
-        if ($isInsertOk) {
-            $_SESSION['msg'] = 'insert_ok';
-            
-        } else {
-            $_SESSION['errors'] = 'insert_ko';
-                    addError('insert_ko');
-        }
-        redirectToHeader('index.php');
+    if ($isInsertOk) {
+        $_SESSION['msg'] = 'insert_ok';
+    } else {
+        $_SESSION['errors'] = 'insert_ko';
+        addError('insert_ko');
     }
- 
+    redirectToHeader('index.php');
+}
+
 
 
 
@@ -195,17 +198,16 @@ function addTask($dbCo)
 function archiveTask($dbCo)
 {
 
-
     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
         $query = $dbCo->prepare("UPDATE task SET is_terminate = '1' WHERE id_task = :task_id;");
 
-        $isInsertOk = $query->execute(['task_id' => intval($_GET['id_task'])]);
+        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
 
         if ($isInsertOk) {
-            $_SESSION['msg'] = 'archive_ok';
+            $_SESSION['msg'] = 'archive_ok';    
         } else {
-            $_SESSION['error'] = 'archive_ko';
+            $_SESSION['errors'] = 'archive_ko';
         }
 
         redirectToHeader("index.php");
@@ -220,40 +222,26 @@ function archiveTask($dbCo)
 
 
 /**
- * edit task title to data base
- *
+ * edit task title and save it in database.
+ *  
  * @param [type] $dbCo connection
  * @return void
  */
 function editTasktitle($dbCo)
 {
-    //verify the length of the task
-    if (strlen($_POST['task_title'] )> 255 || strlen($_POST['task_title']) < 0 ) {
-        $_SESSION['error'] = 'nb_char_ko';
-        redirectToHeader('index.php');
-    }
-
-
-    if (
-        isset($_POST['task_title']) && strlen($_POST['task_title']) > 0 && isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task']) 
-    ) {
-
-        // UPDATE `task` SET `title_task` = 'modify un task' WHERE `task`.`id_task` = 24; 
+    verifyNbChars(255);
+    if (isset($_REQUEST['task_id']) && is_numeric($_REQUEST['task_id'])) {
         $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;");
-
-        $bindValue = $query->execute(
-            [
-                ':task_id' => intval($_GET['id_task']),
-                ':task_title' => htmlspecialchars($_POST['task_title'])
-            ]
-        );
-
-        $isInsertOk = $query->execute($bindValue);
+        
+        $isInsertOk = $query->execute([
+            ':task_id' => intval($_REQUEST['task_id']),
+            ':task_title' => htmlspecialchars($_REQUEST['task_title'])
+        ]);
 
         if ($isInsertOk) {
             $_SESSION['msg'] = 'insert_ok';
         } else {
-            $_SESSION['error'] = 'insert_ko';
+            $_SESSION['errors'] = 'insert_ko';
         }
         redirectToHeader('index.php');
     }
