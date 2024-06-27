@@ -49,6 +49,7 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
 
+
     <form class="border-container write-task-form" action="action.php" method="post">
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="insert">
@@ -57,11 +58,25 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
     </form>
 
 
-    <h2 class="today-task">Today’s tasks</h2>
 
+    <h2 class="priority-task">Priority tasks</h2>
+    <p># Drag and drop to set the priority tasks </p>
+    <ol id="priority-task-lst" class="priority-task-lst">
 
+    </ol>
 
-    <ol class="task-lst">
+    <div class="today-task-container">
+      <h2 class="today-task">Today’s tasks</h2>
+      <div class="sort-task">
+        <label class="sort-task-label" for="sort_task">sort by</label>
+        <select name="sort_task" id="sort_task">
+          <option value="created date">created date</option>
+          <option class="sort-task-option" alue="periorty">periorty</option>
+          <option value="cat">planing <data value=""></data></option>
+        </select>
+      </div>
+    </div>
+    <ol id="today-task-lst" class="task-lst">
 
       <?php
       echo (showLsTasks($nonTerminatedTasks->fetchAll()));
@@ -73,12 +88,12 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
 
   </main>
 
-  <footer>
+  <footer class="footer">
     <p>© 2024 To Do List</p>
   </footer>
 
   <template id="update-title-task-template">
-  <form class="edit-task-form" action="action.php" method="post">
+    <form class="edit-task-form" action="action.php" method="post">
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="edit">
       <input class="js-task-id" type="hidden" name="task_id" value="">
@@ -86,9 +101,6 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
       <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
     </form>
   </template>
-
-
-
 
   <script type="module" src="scripts/script.js"></script>
 
