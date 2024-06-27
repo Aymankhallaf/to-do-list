@@ -52,7 +52,6 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
     <form class="border-container write-task-form" action="action.php" method="post">
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="insert">
-      <label class="hide" for="write-task-label">new task</label>
       <textarea rows="auto" cols="100%" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
       <button type="submit"><img src="/img/add.svg" alt="add task"></button>
     </form>
@@ -82,7 +81,6 @@ $nonTerminatedTasks = getDataFromDatabase($dbCo);
   <form class="edit-task-form" action="action.php" method="post">
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="edit">
-      <label class="hide" for="edit-task-label">new task</label>
       <textarea rows="auto" cols="100%" type="text" class="edit-task-title" id="task-title-textarea" name="task_title" required></textarea>
       <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
     </form>

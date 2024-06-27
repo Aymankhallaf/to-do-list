@@ -25,6 +25,5 @@ else if ($_REQUEST['action'] === 'archive') {
 }
 
 
-else if ($_REQUEST['action'] === 'edit_task_title'){
-    // UPDATE `task` SET `title_task` = 'modify un task' WHERE `task`.`id_task` = 24; 
-}
+else if ($_REQUEST['action'] === 'edit'){
+    editTasktitle($dbCo);}

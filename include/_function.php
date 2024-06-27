@@ -48,6 +48,8 @@ function addError(string $errorMsg): void
     $_SESSION['errorsList'][] = $errorMsg;
 }
 
+
+
 /**
  * redirect to url and 
  *
@@ -92,6 +94,21 @@ function verifyToken(string $redirectUrl = 'index.php'): void
 }
 
 
+
+   /**
+    *  verify the length of the task
+    *
+    * @param integer $maxNumber the maximum lenght of characters.
+    * @return void
+    */
+   function verifyNbChar(int $maxNumber):void{
+       if (strlen($_POST['task_title'] ) > $maxNumber || strlen($_POST['task_title']) < 0 ) {
+        addError('nb_char_ko');
+        redirectToHeader('index.php');
+     }
+   }
+
+
 /**
  * show tasks by creation date order without Showing terminated tasks.
  *
@@ -117,13 +134,13 @@ function showLsTasks(array $lsttasks)
 
     $li = '';
     foreach ($lsttasks as $task) {
-        $li .= '<li data-id='.$task['id_task'].' id='.$task['id_task'].' class="border-container task-lst-item">
+        $li .= '<li data-id=' . $task['id_task'] . ' id=' . $task['id_task'] . ' class="border-container task-lst-item">
         <label class="hide task-lst-item-done" for="done"> done </label>
         <input role="checkbox if the task has been done" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1">
         <p class="js-task-title_txt">' . $task['title_task'] . '</p>
         <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" >
         <img aria-hidden="true" src="/img/archive.svg" alt="archive task">
-        </a><button id='.$task['id_task'].' class="task-edit js-edit-task-title" type="submit" role="edit-task"><img aria-hidden="true" src="/img/edit.svg" alt="edit task"></button>
+        </a><button id=' . $task['id_task'] . ' class="task-edit js-edit-task-title" type="submit" role="edit-task"><img aria-hidden="true" src="/img/edit.svg" alt="edit task"></button>
 
         <button class="task-delete" type="submit" role="delete-task"><img aria-hidden="true" src="/img/delete.svg" alt="delete task"></button>
       </li>';
@@ -140,12 +157,8 @@ function showLsTasks(array $lsttasks)
  */
 function addTask($dbCo)
 {
-    //verify the length of the task
 
-    if (
-        isset($_POST['task_title']) && strlen($_POST['task_title']) > 0
-    ) {
-
+    verifyNbChar(255);
         $insertTask = $dbCo->prepare("INSERT INTO task 
         (title_task, creation_date) VALUES 
         (:task_title, CURRENT_DATE())");
@@ -159,12 +172,17 @@ function addTask($dbCo)
 
         if ($isInsertOk) {
             $_SESSION['msg'] = 'insert_ok';
+            
         } else {
-            $_SESSION['error'] = 'insert_ko';
+            $_SESSION['errors'] = 'insert_ko';
+                    addError('insert_ko');
         }
         redirectToHeader('index.php');
     }
-}
+ 
+
+
+
 
 
 
@@ -176,6 +194,7 @@ function addTask($dbCo)
  */
 function archiveTask($dbCo)
 {
+
 
     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
@@ -197,31 +216,39 @@ function archiveTask($dbCo)
 
 
 
+
+
+
 /**
- * add task to data base
+ * edit task title to data base
  *
- * @param string $postTaskTitle
- * @param [type] $dbCo
+ * @param [type] $dbCo connection
  * @return void
  */
-function editTasktitle(string $postTaskTitle, $dbCo)
+function editTasktitle($dbCo)
 {
     //verify the length of the task
+    if (strlen($_POST['task_title'] )> 255 || strlen($_POST['task_title']) < 0 ) {
+        $_SESSION['error'] = 'nb_char_ko';
+        redirectToHeader('index.php');
+    }
+
 
     if (
-        isset($_POST['task_title']) && strlen($_POST['task_title']) > 0
+        isset($_POST['task_title']) && strlen($_POST['task_title']) > 0 && isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task']) 
     ) {
 
-        $insertTask = $dbCo->prepare("INSERT INTO task 
-        (title_task, creation_date) VALUES 
-        (:task_title, CURRENT_DATE())");
+        // UPDATE `task` SET `title_task` = 'modify un task' WHERE `task`.`id_task` = 24; 
+        $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;");
 
+        $bindValue = $query->execute(
+            [
+                ':task_id' => intval($_GET['id_task']),
+                ':task_title' => htmlspecialchars($_POST['task_title'])
+            ]
+        );
 
-        $bindValue = ([
-            ':task_title' => htmlspecialchars($postTaskTitle)
-        ]);
-
-        $isInsertOk = $insertTask->execute($bindValue);
+        $isInsertOk = $query->execute($bindValue);
 
         if ($isInsertOk) {
             $_SESSION['msg'] = 'insert_ok';
