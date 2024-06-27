@@ -120,7 +120,21 @@ function verifyNbChars(int $maxNumber): void
  */
 function getNterminatedNpriority($dbCo)
 {
-    $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 ORDER BY creation_date DESC;");
+    $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 AND rank_task IS NULL  ORDER BY creation_date DESC;");
+    $query->execute();
+    return $query;
+}
+
+
+/**
+ * get priority tasks asc order.
+ *
+ * @param [type] $dbCo the object dbco who mange the database connection
+ * @return object  of tasks
+ */
+function gePriorityTasks($dbCo)
+{
+    $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 AND rank_task IS NOT NULL  ORDER BY rank_task ASC;");
     $query->execute();
     return $query;
 }
@@ -199,7 +213,7 @@ function archiveTask($dbCo)
         $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
 
         if ($isInsertOk) {
-            $_SESSION['msg'] = 'archive_ok';    
+            $_SESSION['msg'] = 'archive_ok';
         } else {
             $_SESSION['errors'] = 'archive_ko';
         }
@@ -220,7 +234,7 @@ function editTasktitle($dbCo)
     verifyNbChars(255);
     if (isset($_REQUEST['task_id']) && is_numeric($_REQUEST['task_id'])) {
         $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;");
-        
+
         $isInsertOk = $query->execute([
             ':task_id' => intval($_REQUEST['task_id']),
             ':task_title' => htmlspecialchars($_REQUEST['task_title'])
