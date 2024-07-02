@@ -61,7 +61,7 @@ export function dropAndDrop() {
     priorityOL.addEventListener('drop', function (e) {
         e.preventDefault();
         if (selected) {
-            priorityOL.appendChild(selected);
+            priorityOL.insertBefore(selected, priorityOL.firstChild);
             //get the number of index in ol starts with 0
             let indexOlPriority = Array.prototype.indexOf.call(priorityOL.children, selected);
             console.log(indexOlPriority);

@@ -132,7 +132,7 @@ function getNterminatedNpriority($dbCo)
  * @param [type] $dbCo the object dbco who mange the database connection
  * @return object  of tasks
  */
-function gePriorityTasks($dbCo)
+function getPriorityTasks($dbCo)
 {
     $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 AND rank_task IS NOT NULL  ORDER BY rank_task ASC;");
     $query->execute();
