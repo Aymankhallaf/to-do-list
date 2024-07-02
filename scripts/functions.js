@@ -32,6 +32,7 @@ export function listenToEditBtn(editButtons) {
 }
 
 
+
 export function dropAndDrop() {
     let todayOL = document.getElementById("today-task-lst");
     let priorityOL = document.getElementById("priority-task-lst");
@@ -64,8 +65,27 @@ export function dropAndDrop() {
             priorityOL.insertBefore(selected, priorityOL.firstChild);
             //get the number of index in ol starts with 0
             let indexOlPriority = Array.prototype.indexOf.call(priorityOL.children, selected);
-            console.log(indexOlPriority);
+            console.log(indexOlPriority, selected.id);
+            //set cookies
+            // document.cookie = "id_task="+selected.id+";"+"rank_task="+indexOlPriority;
+            fetch("/", {
+                method: "POST",
+                mode: "same-origin",
+                credentials: "same-origin",
+                              headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                },body: JSON.stringify({
+                    id_task: selected.id,
+                    rank_task: indexOlPriority,
+                })
+            })
+                .then((response) => response.json())
+                .then((json) => console.log(json))
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
             selected = null;
+
         }
     });
 
@@ -80,9 +100,8 @@ export function dropAndDrop() {
             todayOL.appendChild(selected);
             //get the number of index in ol starts with 0
             let indexOltoday = Array.prototype.indexOf.call(priorityOL.children, selected);
-            console.log("the tasks go to the bottom (-1)",indexOltoday);
+            console.log("the tasks go to the bottom (-1)", indexOltoday);
             selected = null;
-            console.log('Dropped into today tasks');
         }
     });
 

@@ -1,21 +1,32 @@
 <?php
 session_start();
+
 include 'include/_connection.php';
 include 'include/_config.php';
 include 'include/_function.php';
 
-
-var_dump($_GET);
-
-//create session token
-if (!isset(($_SESSION['myToken']))) {
-
+// Create session token
+if (!isset($_SESSION['myToken'])) {
   $_SESSION['myToken'] = md5(uniqid(mt_rand(), true));
 }
 
+$contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
+
+if ($contentType === "application/json") {
+  //Receive the RAW post data.
+  $content = trim(file_get_contents("php://input"));
+
+  $decoded = json_decode($content, true);
+  var_dump($decoded);
 
 
-
+  //If json_decode failed, the JSON is invalid.
+  if (!is_array($decoded)) {
+  } else {
+    // Send error back to user.
+    echo "error";
+  }
+}
 ?>
 
 
@@ -58,17 +69,19 @@ if (!isset(($_SESSION['myToken']))) {
 
 
 
+
     <h2 class="priority-task">Priority tasks</h2>
     <p># Drag and drop to set the priority tasks </p>
     <ol id="priority-task-lst" class="priority-task-lst">
-    <?php
+      <?php
+
       $priorityTasks = getPriorityTasks($dbCo);
       echo (showLsTasks($priorityTasks->fetchAll()));
       ?>
 
     </ol>
 
-      <h2 class="today-task">Today’s tasks</h2>
+    <h2 class="today-task">Today’s tasks</h2>
     <ol id="today-task-lst" class="task-lst">
 
       <?php
@@ -77,7 +90,6 @@ if (!isset(($_SESSION['myToken']))) {
       ?>
 
     </ol>
-
 
 
   </main>
@@ -95,8 +107,8 @@ if (!isset(($_SESSION['myToken']))) {
       <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
     </form>
   </template>
-
   <script type="module" src="scripts/script.js"></script>
+
 
 </body>
 
