@@ -120,7 +120,7 @@ function verifyNbChars(int $maxNumber): void
  */
 function getNonTerminatedTask($dbCo)
 {
-    $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 AND rank_task is NULL ORDER BY creation_date DESC;");
+    $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') as planning_date FROM task WHERE is_terminate = 0 AND rank_task is NULL ORDER BY creation_date DESC;");
     $query->execute();
     return $query;
 }
@@ -134,7 +134,7 @@ function getNonTerminatedTask($dbCo)
  */
 function getPriorityTasks($dbCo)
 {
-    $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 AND rank_task IS NOT NULL  ORDER BY rank_task ASC;");
+    $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') as planning_date FROM task WHERE is_terminate = 0 AND rank_task IS NOT NULL  ORDER BY rank_task ASC;");
     $query->execute();
     return $query;
 }
@@ -151,21 +151,26 @@ function showLsTasks(array $lsttasks)
 
     $li = '';
     foreach ($lsttasks as $task) {
-        $li .= '<li data-id=' . $task['id_task'] . ' id=' . $task['id_task'] . ' class="border-container task-lst-item js-drage" draggable="true">
-        <label class="hide task-lst-item-done" for="done" draggable="false"> done </label>
-        <input role="checkbox if the task has been done" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1" draggable="false">
+        $li .= '<li data-id="' . $task['id_task'] . '" id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
+        <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
+        <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
+        <time datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
         <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
-        <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
+            <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
         </a>
-        <button id=' . $task['id_task'] . ' class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false"><img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false"></button>
-         <a href="action.php?action=up_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
-        <img aria-hidden="true" src="/img/up_rank.svg" alt="periorty task" draggable="false">
+        <button id="' . $task['id_task'] . '" class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
+            <img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false">
+        </button>
+        <a href="action.php?action=up_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+            <img aria-hidden="true" src="/img/up_rank.svg" alt="priority task" draggable="false">
         </a>
         <a href="action.php?action=down_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
-        <img aria-hidden="true" src="/img/down_rank.svg" alt="periorty task" draggable="false">
+            <img aria-hidden="true" src="/img/down_rank.svg" alt="priority task" draggable="false">
         </a>
-        <button class="task-delete" type="submit" role="delete-task" draggable="false"><img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false"></a>
+        <a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+            <img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false">
+        </a>
       </li>';
     }
     return $li;
@@ -262,7 +267,7 @@ function editTasktitle($dbCo)
  * @param [int] up -1 and down +1
  * @return void
  */
-function editTaskRank($dbCo,int $value)
+function editTaskRank($dbCo, int $value)
 {
     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
@@ -282,26 +287,26 @@ function editTaskRank($dbCo,int $value)
 
 
 
-// /**
-//  * delete task.
-//  *  
-//  * @param [type] $dbCo connection
-//  * @return void
-//  */
-// function deleteTask($dbCo)
-// {
-//     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+/**
+ * delete task.
+ *  
+ * @param [type] $dbCo connection
+ * @return void
+ */
+function deleteTask($dbCo)
+{
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
-//         $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task + 1 WHERE id_task = :task_id;");
+        $query = $dbCo->prepare("DELETE FROM task WHERE id_task = :task_id;");
 
-//         $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
+        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
 
-//         if ($isInsertOk) {
-//             $_SESSION['msg'] = 'archive_ok';
-//         } else {
-//             $_SESSION['errors'] = 'archive_ko';
-//         }
+        if ($isInsertOk) {
+            $_SESSION['msg'] = 'archive_ok';
+        } else {
+            $_SESSION['errors'] = 'archive_ko';
+        }
 
-//         redirectToHeader("index.php");
-//     }
-// }
+        redirectToHeader("index.php");
+    }
+}

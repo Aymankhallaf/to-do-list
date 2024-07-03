@@ -37,3 +37,6 @@ else if ($_REQUEST['action'] === 'down_rank'){
     editTaskRank($dbCo,+1);   
 }
 
+else if ($_REQUEST['action'] === 'delete'){
+    deleteTask($dbCo);   
+}
