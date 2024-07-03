@@ -113,14 +113,14 @@ function verifyNbChars(int $maxNumber): void
 
 
 /**
- * get non terminated, non priority tasks order by creation date order.
+ * get non terminated tasks order by creation date order.
  *
  * @param [type] $dbCo the object dbco who mange the database connection
  * @return object  of tasks
  */
-function getNterminatedNpriority($dbCo)
+function getNonTerminatedTask($dbCo)
 {
-    $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 AND rank_task IS NULL  ORDER BY creation_date DESC;");
+    $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0  ORDER BY creation_date DESC;");
     $query->execute();
     return $query;
 }
@@ -157,9 +157,15 @@ function showLsTasks(array $lsttasks)
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
         <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
         <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
-        </a><button id=' . $task['id_task'] . ' class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false"><img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false"></button>
-
-        <button class="task-delete" type="submit" role="delete-task" draggable="false"><img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false"></button>
+        </a>
+        <button id=' . $task['id_task'] . ' class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false"><img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false"></button>
+         <a href="action.php?action=up_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+        <img aria-hidden="true" src="/img/up_rank.svg" alt="periorty task" draggable="false">
+        </a>
+        <a href="action.php?action=down_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+        <img aria-hidden="true" src="/img/down_rank.svg" alt="periorty task" draggable="false">
+        </a>
+        <button class="task-delete" type="submit" role="delete-task" draggable="false"><img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false"></a>
       </li>';
     }
     return $li;
@@ -233,11 +239,10 @@ function editTasktitle($dbCo)
 {
     verifyNbChars(255);
     if (isset($_REQUEST['task_id']) && is_numeric($_REQUEST['task_id'])) {
-        $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;");
+        $query = $dbCo->prepare("UPDATE task SET up_rank = 1 WHERE id_task = :task_id;");
 
         $isInsertOk = $query->execute([
             ':task_id' => intval($_REQUEST['task_id']),
-            ':task_title' => htmlspecialchars($_REQUEST['task_title'])
         ]);
 
         if ($isInsertOk) {
@@ -251,27 +256,50 @@ function editTasktitle($dbCo)
 
 
 /**
- * edit task rank and save it in database.
+ * up task rank and save it in database.
  *  
  * @param [type] $dbCo connection
  * @return void
  */
-function updateTaskRank($dbCo)
+function upTaskRank($dbCo)
 {
-    var_dump($_POST);
-    if (isset($_REQUEST['task_id']) && is_numeric($_REQUEST['task_id'])) {
-        $query = $dbCo->prepare("UPDATE task SET rank_task = 1 WHERE id_task = :task_id;");
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
-        $isInsertOk = $query->execute([
-            ':task_id' => intval($_REQUEST['task_id']),
-            ':task_title' => htmlspecialchars($_REQUEST['task_title'])
-        ]);
+        $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task - 1 WHERE id_task = :task_id;");
+
+        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
 
         if ($isInsertOk) {
-            $_SESSION['msg'] = 'insert_ok';
+            $_SESSION['msg'] = 'archive_ok';
         } else {
-            $_SESSION['errors'] = 'insert_ko';
+            $_SESSION['errors'] = 'archive_ko';
         }
-        redirectToHeader('index.php');
+
+        redirectToHeader("index.php");
+    }
+}
+
+
+/**
+ * down task rank and save it in database.
+ *  
+ * @param [type] $dbCo connection
+ * @return void
+ */
+function downTaskRank($dbCo)
+{
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+
+        $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task + 1 WHERE id_task = :task_id;");
+
+        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
+
+        if ($isInsertOk) {
+            $_SESSION['msg'] = 'archive_ok';
+        } else {
+            $_SESSION['errors'] = 'archive_ko';
+        }
+
+        redirectToHeader("index.php");
     }
 }

@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 include 'include/_connection.php';
 include 'include/_config.php';
 include 'include/_function.php';
@@ -12,25 +11,6 @@ if (!isset($_SESSION['myToken'])) {
 
 
 
-$contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-
-if ($contentType === "application/json") {
-  //Receive the RAW post data.
-  $content = trim(file_get_contents("php://input"));
-
-  $decoded = json_decode($content, true);
-  var_dump( $decoded );
-      updateTaskRank($dbCo);
-
-  //If json_decode failed, the JSON is invalid.
-  if (!is_array($decoded)) {
-    echo "error 1";
-
-  } else {
-    // Send error back to user.
-    echo "error 2";
-  }
-}
 ?>
 
 
@@ -74,26 +54,27 @@ if ($contentType === "application/json") {
 
 
 
-    <h2 class="priority-task">Priority tasks</h2>
-    <p># Drag and drop to set the priority tasks </p>
-    <ol id="priority-task-lst" class="priority-task-lst">
-      <?php
+    <!-- <h2 class="priority-task">Priority tasks</h2> -->
+    <!-- <ol id="priority-task-lst" class="priority-task-lst">
+    
 
-      $priorityTasks = getPriorityTasks($dbCo);
-      echo (showLsTasks($priorityTasks->fetchAll()));
-      ?>
-
-    </ol>
+      // $priorityTasks = getPriorityTasks($dbCo);
+      // echo (showLsTasks($priorityTasks->fetchAll()));
+      // 
+    </ol> -->
 
     <h2 class="today-task">Today’s tasks</h2>
     <ol id="today-task-lst" class="task-lst">
 
       <?php
-      $nonTerminatedTasks = getNterminatedNpriority($dbCo);
+      $nonTerminatedTasks = getNonTerminatedTask($dbCo);
       echo (showLsTasks($nonTerminatedTasks->fetchAll()));
+
       ?>
 
     </ol>
+
+    
 
 
   </main>

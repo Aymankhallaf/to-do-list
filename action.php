@@ -29,3 +29,11 @@ else if ($_REQUEST['action'] === 'edit'){
     editTasktitle($dbCo);
 }
 
+else if ($_REQUEST['action'] === 'up_rank'){
+    upTaskRank($dbCo);    
+}
+
+else if ($_REQUEST['action'] === 'down_rank'){
+    downTaskRank($dbCo);    
+}
+
