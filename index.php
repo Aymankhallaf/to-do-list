@@ -48,6 +48,8 @@ if (!isset($_SESSION['myToken'])) {
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="insert">
       <textarea rows="auto" cols="100%" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
+      <label for="start">Planning date:</label>
+      <input type="date" value="2017-06-01" name="Planning_date"/>
       <button type="submit"><img src="/img/add.svg" alt="add task"></button>
     </form>
 
@@ -90,6 +92,8 @@ if (!isset($_SESSION['myToken'])) {
       <input type="hidden" name="action" value="edit">
       <input class="js-task-id" type="hidden" name="task_id" value="">
       <textarea rows="auto" cols="100%" type="text" class="edit-task-title" id="task-title-textarea" name="task_title" required></textarea>
+      <label for="start">Planning date:</label>
+      <input value="" id="Planning_date" type="date" name="Planning_date" />
       <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
     </form>
   </template>

@@ -1,14 +1,20 @@
 /**
  * Shows editing task title form (from template ).
- * @param {string} taskTitle the task title. 
+ * @param {string} taskTitle the task title.
+ * @param {string} PlanningDate the planning date. 
  * @param {string} injectedId the id tag of the target injection location.
  */
-export function editTasktitle(taskTitle, injectedId) {
-    const template = document.getElementById("update-title-task-template")
+export function editTask(taskTitle, PlanningDate,injectedId) {
+    console.log(typeof PlanningDate);
+    const template = document.getElementById("update-title-task-template");
     let clone = document.importNode(template.content, true);
     clone.getElementById("task-title-textarea").innerText = taskTitle;
+    const [day, month, year] = PlanningDate.split('/');
+    const formattedDate = `${year}-${month}-${day}`;
+    clone.getElementById("Planning_date").value = formattedDate;
+    console.log(clone.getElementById("Planning_date").value);
     clone.querySelector(".js-task-id").value = injectedId;
-    const injected = document.getElementById(injectedId)
+    const injected = document.getElementById(injectedId);
     injected.appendChild(clone);
 
 }
@@ -23,8 +29,10 @@ export function listenToEditBtn(editButtons) {
         b.addEventListener("click", (e) => {
             let li = e.currentTarget.parentNode;
             let txt = li.querySelector(".js-task-title_txt").innerText;
+            console.log(e.currentTarget.parentNode)
+            let PlanningDate = li.querySelector('.js-planning-date').dateTime;
             li.innerText = '';
-            editTasktitle(txt, li.dataset.id);
+            editTask(txt,PlanningDate, li.dataset.id);
         });
 
     });

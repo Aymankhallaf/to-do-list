@@ -155,7 +155,7 @@ function showLsTasks(array $lsttasks)
         <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
         <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
-        <time datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
+        <time value="'. $task['planning_date'] .'" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
         <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
             <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
         </a>
@@ -244,10 +244,13 @@ function editTasktitle($dbCo)
 {
     verifyNbChars(255);
     if (isset($_REQUEST['task_id']) && is_numeric($_REQUEST['task_id'])) {
-        $query = $dbCo->prepare("UPDATE task SET up_rank = 1 WHERE id_task = :task_id;");
+
+        $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;UPDATE task SET Planning_date = :Planning_date WHERE id_task = :task_id;");
 
         $isInsertOk = $query->execute([
             ':task_id' => intval($_REQUEST['task_id']),
+            ':task_title' => htmlspecialchars($_REQUEST['task_title']),
+            ':Planning_date' => htmlspecialchars($_REQUEST['Planning_date'])
         ]);
 
         if ($isInsertOk) {
@@ -271,7 +274,7 @@ function editTaskRank($dbCo, int $value)
 {
     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
-        $query = $dbCo->prepare("UPDATE task SET rank_task = COALESCE(rank_task, 0) + $value WHERE id_task = :task_id;");
+        $query = $dbCo->prepare("UPDATE task SET rank_task = COALESCE(rank_task, 0) + $value WHERE id_task <= :task_id;");
 
         $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
 
@@ -285,6 +288,30 @@ function editTaskRank($dbCo, int $value)
     }
 }
 
+/**
+ * up or down task rank and save it in database(add - 1 to up its rank, add + 1 to its rank).
+ *  
+ * @param [type] $dbCo connection
+ * @param [int] up -1 and down +1
+ * @return void
+ */
+function downTaskRank($dbCo, int $value)
+{
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+
+        $query = $dbCo->prepare("UPDATE task SET rank_task = COALESCE(rank_task, 0) + $value WHERE id_task <= :task_id;");
+
+        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
+
+        if ($isInsertOk) {
+            $_SESSION['msg'] = 'archive_ok';
+        } else {
+            $_SESSION['errors'] = 'archive_ko';
+        }
+
+        redirectToHeader("index.php");
+    }
+}
 
 
 /**
