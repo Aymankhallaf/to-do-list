@@ -30,10 +30,10 @@ else if ($_REQUEST['action'] === 'edit'){
 }
 
 else if ($_REQUEST['action'] === 'up_rank'){
-    upTaskRank($dbCo);    
+    editTaskRank($dbCo,-1);    
 }
 
 else if ($_REQUEST['action'] === 'down_rank'){
-    downTaskRank($dbCo);    
+    editTaskRank($dbCo,+1);   
 }
 

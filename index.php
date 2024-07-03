@@ -54,14 +54,15 @@ if (!isset($_SESSION['myToken'])) {
 
 
 
-    <!-- <h2 class="priority-task">Priority tasks</h2> -->
-    <!-- <ol id="priority-task-lst" class="priority-task-lst">
-    
+    <h2 class="priority-task">Priority tasks</h2>
+    <ol id="priority-task-lst" class="priority-task-lst">
+      <?php
 
-      // $priorityTasks = getPriorityTasks($dbCo);
-      // echo (showLsTasks($priorityTasks->fetchAll()));
-      // 
-    </ol> -->
+      $priorityTasks = getPriorityTasks($dbCo);
+      echo (showLsTasks($priorityTasks->fetchAll()));
+      ?>
+
+    </ol>
 
     <h2 class="today-task">Today’s tasks</h2>
     <ol id="today-task-lst" class="task-lst">

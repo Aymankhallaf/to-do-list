@@ -120,7 +120,7 @@ function verifyNbChars(int $maxNumber): void
  */
 function getNonTerminatedTask($dbCo)
 {
-    $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0  ORDER BY creation_date DESC;");
+    $query = $dbCo->prepare("SELECT id_task, title_task FROM task WHERE is_terminate = 0 AND rank_task is NULL ORDER BY creation_date DESC;");
     $query->execute();
     return $query;
 }
@@ -256,16 +256,17 @@ function editTasktitle($dbCo)
 
 
 /**
- * up task rank and save it in database.
+ * up or down task rank and save it in database(add - 1 to up its rank, add + 1 to its rank).
  *  
  * @param [type] $dbCo connection
+ * @param [int] up -1 and down +1
  * @return void
  */
-function upTaskRank($dbCo)
+function editTaskRank($dbCo,int $value)
 {
     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
-        $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task - 1 WHERE id_task = :task_id;");
+        $query = $dbCo->prepare("UPDATE task SET rank_task = COALESCE(rank_task, 0) + $value WHERE id_task = :task_id;");
 
         $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
 
@@ -280,26 +281,27 @@ function upTaskRank($dbCo)
 }
 
 
-/**
- * down task rank and save it in database.
- *  
- * @param [type] $dbCo connection
- * @return void
- */
-function downTaskRank($dbCo)
-{
-    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
-        $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task + 1 WHERE id_task = :task_id;");
+// /**
+//  * delete task.
+//  *  
+//  * @param [type] $dbCo connection
+//  * @return void
+//  */
+// function deleteTask($dbCo)
+// {
+//     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
-        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
+//         $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task + 1 WHERE id_task = :task_id;");
 
-        if ($isInsertOk) {
-            $_SESSION['msg'] = 'archive_ok';
-        } else {
-            $_SESSION['errors'] = 'archive_ko';
-        }
+//         $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
 
-        redirectToHeader("index.php");
-    }
-}
+//         if ($isInsertOk) {
+//             $_SESSION['msg'] = 'archive_ok';
+//         } else {
+//             $_SESSION['errors'] = 'archive_ko';
+//         }
+
+//         redirectToHeader("index.php");
+//     }
+// }
