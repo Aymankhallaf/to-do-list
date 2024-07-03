@@ -248,3 +248,30 @@ function editTasktitle($dbCo)
         redirectToHeader('index.php');
     }
 }
+
+
+/**
+ * edit task rank and save it in database.
+ *  
+ * @param [type] $dbCo connection
+ * @return void
+ */
+function updateTaskRank($dbCo)
+{
+    var_dump($_POST);
+    if (isset($_REQUEST['task_id']) && is_numeric($_REQUEST['task_id'])) {
+        $query = $dbCo->prepare("UPDATE task SET rank_task = 1 WHERE id_task = :task_id;");
+
+        $isInsertOk = $query->execute([
+            ':task_id' => intval($_REQUEST['task_id']),
+            ':task_title' => htmlspecialchars($_REQUEST['task_title'])
+        ]);
+
+        if ($isInsertOk) {
+            $_SESSION['msg'] = 'insert_ok';
+        } else {
+            $_SESSION['errors'] = 'insert_ko';
+        }
+        redirectToHeader('index.php');
+    }
+}

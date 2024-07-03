@@ -10,6 +10,8 @@ if (!isset($_SESSION['myToken'])) {
   $_SESSION['myToken'] = md5(uniqid(mt_rand(), true));
 }
 
+
+
 $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
 
 if ($contentType === "application/json") {
@@ -17,14 +19,16 @@ if ($contentType === "application/json") {
   $content = trim(file_get_contents("php://input"));
 
   $decoded = json_decode($content, true);
-  var_dump($decoded);
-
+  var_dump( $decoded );
+      updateTaskRank($dbCo);
 
   //If json_decode failed, the JSON is invalid.
   if (!is_array($decoded)) {
+    echo "error 1";
+
   } else {
     // Send error back to user.
-    echo "error";
+    echo "error 2";
   }
 }
 ?>
