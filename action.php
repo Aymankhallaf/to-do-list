@@ -30,9 +30,13 @@ if ($_REQUEST['action'] === 'insert') {
         editTasktitle($dbCo, $_REQUEST);
     }
 } else if ($_REQUEST['action'] === 'up_rank') {
-    swapRank($dbCo, -1,  $_REQUEST['id_task']);
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+        swapRank($dbCo, -1,  $_REQUEST['id_task']);
+    }
 } elseif ($_REQUEST['action'] === 'down_rank') {
-    swapRank($dbCo, 1, $_REQUEST['id_task']);
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+        swapRank($dbCo, 1, $_REQUEST['id_task']);
+    }
 } else if ($_REQUEST['action'] === 'delete') {
-    deleteTask($dbCo);
+    deleteTask($dbCo, $_REQUEST['id_task']);
 }
