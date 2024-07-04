@@ -273,30 +273,49 @@ function editTasktitle(PDO $dbCo, array $task): void
 /**
  * up or down task rank and save it in database(add - 1 to up its rank, add + 1 to its rank).
  *  
- * @param PDO $dbCo connection
+ * @param [type] $dbCo connection
  * @param [int] up -1 and down +1
  * @return void
  */
-// function editTaskRank(PDO $dbCo, int $changingValue, int $id_task): void
+// function editTaskRank($dbCo, int $value)
 // {
+//     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
+//         $query = $dbCo->prepare("UPDATE task SET rank_task = COALESCE(rank_task, 0) + $value WHERE id_task <= :task_id;");
 
-//     $dbCo->beginTransaction();
+//         $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
 
-//     // Find the task to swap with
-//     $query = $dbCo->prepare("SELECT id_task FROM task 
-//                 WHERE task_rank = (
-//                     SELECT task_rank FROM task WHERE id_task = :task_id
-//                 ) + :changingValue
-//             ");
-//     $query->execute([
-//         "task_id" => $id_task,
-//         "changingValue" => $changingValue
-//     ]);
+//         if ($isInsertOk) {
+//             $_SESSION['msg'] = 'archive_ok';
+//         } else {
+//             $_SESSION['errors'] = 'archive_ko';
+//         }
 
-//     $idToMove = $query->fetchColumn();
-//     var_dump($idToMove);
+//         redirectToHeader("index.php");
+//     }
 // }
+
+
+function updateRank($dbCo, int $changingValue, int $targetId): void
+{
+
+    $query = $dbCo->prepare("UPDATE task SET rank_task + $changingValue
+     WHERE id_task = :targetId");
+    $isUpdateOk = $query->execute([
+        ':targetId' => $targetId,
+        ':changingValue' => $changingValue
+    ]);
+    if ($isUpdateOk) {
+        $_SESSION['msg'] = 'archive_ok';
+    } else {
+        $_SESSION['errors'] = 'archive_ko';
+    }
+
+    redirectToHeader("index.php");
+}
+
+
+
 
 /**
  * delete task.

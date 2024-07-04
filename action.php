@@ -32,12 +32,16 @@ if ($_REQUEST['action'] === 'insert') {
   
 
 }
-// else if ($_REQUEST['action'] === 'up_rank') {
-//       editTaskRank($dbCo, -1,$_REQUEST['id_task']);
-// } 
-// else if ($_REQUEST['action'] === 'down_rank') {
-//     editTaskRank($dbCo, 1,$_REQUEST['id_task']);
-// } 
+else if ($_REQUEST['action'] === 'up_rank') {
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+
+        updateRank($dbCo, -1,$_REQUEST['id_task']);}
+} 
+else if ($_REQUEST['action'] === 'down_rank') {
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+
+    updateRank($dbCo, +1,  $_REQUEST['id_task']);
+} }
 else if ($_REQUEST['action'] === 'delete') {
     deleteTask($dbCo);
 }
