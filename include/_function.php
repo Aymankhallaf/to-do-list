@@ -93,6 +93,18 @@ function verifyToken(string $redirectUrl = 'index.php'): void
     }
 }
 
+/**
+ * verify session token
+ *
+ * @return void
+ */
+function verifyIdTask(string $redirectUrl = 'index.php'): void
+{
+
+}
+
+
+
 
 /**
  *  verify the length of the task
@@ -115,10 +127,10 @@ function verifyNbChars(int $maxNumber): void
 /**
  * get non terminated tasks order by creation date order.
  *
- * @param [type] $dbCo the object dbco who mange the database connection
+ * @param PDO $dbCo the class PDO who mange the database connection
  * @return object  of tasks
  */
-function getNonTerminatedTask($dbCo)
+function getNonTerminatedTask(PDO $dbCo): object
 {
     $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') as planning_date FROM task WHERE is_terminate = 0 AND rank_task is NULL ORDER BY creation_date DESC;");
     $query->execute();
@@ -129,10 +141,10 @@ function getNonTerminatedTask($dbCo)
 /**
  * get priority tasks asc order.
  *
- * @param [type] $dbCo the object dbco who mange the database connection
+ * @param PDO $dbCo the object dbco who mange the database connection
  * @return object  of tasks
  */
-function getPriorityTasks($dbCo)
+function getPriorityTasks(PDO $dbCo): object
 {
     $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') as planning_date FROM task WHERE is_terminate = 0 AND rank_task IS NOT NULL  ORDER BY rank_task ASC;");
     $query->execute();
@@ -146,7 +158,7 @@ function getPriorityTasks($dbCo)
  * @param array $lsttasks a list of tasks
  * @return string string of html tages + task
  */
-function showLsTasks(array $lsttasks)
+function showLsTasks(array $lsttasks): string
 {
 
     $li = '';
@@ -155,7 +167,7 @@ function showLsTasks(array $lsttasks)
         <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
         <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
-        <time value="'. $task['planning_date'] .'" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
+        <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
         <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
             <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
         </a>
@@ -178,12 +190,12 @@ function showLsTasks(array $lsttasks)
 
 
 /**
- * add task to data base
+ * add task to database
  *
- * @param [type] $dbCo connection
+ * @param PDO $dbCo connection 
  * @return void
  */
-function addTask($dbCo)
+function addTask(PDO $dbCo): void
 {
 
     verifyNbChars(255);
@@ -211,17 +223,15 @@ function addTask($dbCo)
 /**
  * Archieves task "set terminted task to true(it won't be shown in home page)"
  *
- * @param [type] $dbCo connection
+ * @param PDO $dbCo connection database
  * @return void
  */
-function archiveTask($dbCo)
+function archiveTask(PDO $dbCo, int $task_id):void
 {
-
-    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
         $query = $dbCo->prepare("UPDATE task SET is_terminate = '1' WHERE id_task = :task_id;");
 
-        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
+        $isInsertOk = $query->execute(['task_id' => $task_id]);
 
         if ($isInsertOk) {
             $_SESSION['msg'] = 'archive_ok';
@@ -231,19 +241,18 @@ function archiveTask($dbCo)
 
         redirectToHeader("index.php");
     }
-}
+
 
 
 /**
  * edit task title and save it in database.
  *  
- * @param [type] $dbCo connection
+ * @param PDO $dbCo connection database
  * @return void
  */
-function editTasktitle($dbCo)
+function editTasktitle(PDO $dbCo): void
 {
     verifyNbChars(255);
-    if (isset($_REQUEST['task_id']) && is_numeric($_REQUEST['task_id'])) {
 
         $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;UPDATE task SET Planning_date = :Planning_date WHERE id_task = :task_id;");
 
@@ -260,69 +269,45 @@ function editTasktitle($dbCo)
         }
         redirectToHeader('index.php');
     }
-}
 
 
-/**
- * up or down task rank and save it in database(add - 1 to up its rank, add + 1 to its rank).
- *  
- * @param [type] $dbCo connection
- * @param [int] up -1 and down +1
- * @return void
- */
-function editTaskRank($dbCo, int $value)
-{
-    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
-
-        $query = $dbCo->prepare("UPDATE task SET rank_task = COALESCE(rank_task, 0) + $value WHERE id_task <= :task_id;");
-
-        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
-
-        if ($isInsertOk) {
-            $_SESSION['msg'] = 'archive_ok';
-        } else {
-            $_SESSION['errors'] = 'archive_ko';
-        }
-
-        redirectToHeader("index.php");
-    }
-}
 
 /**
  * up or down task rank and save it in database(add - 1 to up its rank, add + 1 to its rank).
  *  
- * @param [type] $dbCo connection
+ * @param PDO $dbCo connection
  * @param [int] up -1 and down +1
  * @return void
  */
-function downTaskRank($dbCo, int $value)
-{
-    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+// function editTaskRank(PDO $dbCo, int $changingValue, int $id_task): void
+// {
 
-        $query = $dbCo->prepare("UPDATE task SET rank_task = COALESCE(rank_task, 0) + $value WHERE id_task <= :task_id;");
 
-        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
+//     $dbCo->beginTransaction();
 
-        if ($isInsertOk) {
-            $_SESSION['msg'] = 'archive_ok';
-        } else {
-            $_SESSION['errors'] = 'archive_ko';
-        }
+//     // Find the task to swap with
+//     $query = $dbCo->prepare("SELECT id_task FROM task 
+//                 WHERE task_rank = (
+//                     SELECT task_rank FROM task WHERE id_task = :task_id
+//                 ) + :changingValue
+//             ");
+//     $query->execute([
+//         "task_id" => $id_task,
+//         "changingValue" => $changingValue
+//     ]);
 
-        redirectToHeader("index.php");
-    }
-}
-
+//     $idToMove = $query->fetchColumn();
+//     var_dump($idToMove);
+// }
 
 /**
  * delete task.
  *  
- * @param [type] $dbCo connection
+ * @param PDO $dbCo connection database
  * @return void
  */
-function deleteTask($dbCo)
+function deleteTask(PDO $dbCo): void
 {
-    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
 
         $query = $dbCo->prepare("DELETE FROM task WHERE id_task = :task_id;");
 
@@ -335,5 +320,12 @@ function deleteTask($dbCo)
         }
 
         redirectToHeader("index.php");
-    }
+    
 }
+
+
+// function resetOrderRank(PDO $dbCo){
+//     if ()
+//     $query = $dbCo->prepare("Update task SET task_rank =  COALESCE(rank_task, 0) + :changingValue WHERE id_task = :task_id;");
+
+// }

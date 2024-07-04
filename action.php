@@ -19,24 +19,21 @@ if ($_REQUEST['action'] === 'insert') {
     //call the function to insert task to database
     addTask($dbCo);
 } 
-
 else if ($_REQUEST['action'] === 'archive') {
-    archiveTask($dbCo);
-}
-
-
-else if ($_REQUEST['action'] === 'edit'){
+    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+    
+        archiveTask($dbCo,$_REQUEST['id_task']);
+    }
+} 
+else if ($_REQUEST['action'] === 'edit') {
     editTasktitle($dbCo);
-}
-
-else if ($_REQUEST['action'] === 'up_rank'){
-    editTaskRank($dbCo,-1);    
-}
-
-else if ($_REQUEST['action'] === 'down_rank'){
-    downTaskRank($dbCo, 1) ;  
-}
-
-else if ($_REQUEST['action'] === 'delete'){
-    deleteTask($dbCo);   
+} 
+// else if ($_REQUEST['action'] === 'up_rank') {
+//       editTaskRank($dbCo, -1,$_REQUEST['id_task']);
+// } 
+// else if ($_REQUEST['action'] === 'down_rank') {
+//     editTaskRank($dbCo, 1,$_REQUEST['id_task']);
+// } 
+else if ($_REQUEST['action'] === 'delete') {
+    deleteTask($dbCo);
 }
