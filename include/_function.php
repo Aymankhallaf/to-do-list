@@ -127,13 +127,13 @@ function verifyNbChars(int $maxNumber): void
  * get non terminated tasks order by creation date order.
  *
  * @param PDO $dbCo the class PDO who mange the database connection
- * @return object  of tasks
+ * @return array  of tasks
  */
-function getNonTerminatedTask(PDO $dbCo): object
+function getNonTerminatedTask(PDO $dbCo): array
 {
     $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') as planning_date FROM task WHERE is_terminate = 0 AND rank_task is NULL ORDER BY creation_date DESC;");
     $query->execute();
-    return $query;
+    return $query->fetchAll();
 }
 
 
@@ -141,13 +141,13 @@ function getNonTerminatedTask(PDO $dbCo): object
  * get priority tasks asc order.
  *
  * @param PDO $dbCo the object dbco who mange the database connection
- * @return object  of tasks
+ * @return array  of tasks
  */
-function getPriorityTasks(PDO $dbCo): object
+function getPriorityTasks(PDO $dbCo): array
 {
     $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') as planning_date FROM task WHERE is_terminate = 0 AND rank_task IS NOT NULL  ORDER BY rank_task ASC;");
     $query->execute();
-    return $query;
+    return $query->fetchAll();
 }
 
 /**
@@ -245,19 +245,20 @@ function archiveTask(PDO $dbCo, int $task_id): void
 
 /**
  * edit task title and save it in database.
- * @param array $task_id the task array
+ * @param array $task the task array
  * @param PDO $dbCo connection database
  * @return void
  */
 function editTasktitle(PDO $dbCo, array $task): void
 {
     verifyNbChars(255);
-    $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;UPDATE task SET Planning_date = :Planning_date WHERE id_task = :task_id;");
+    $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;
+    UPDATE task SET Planning_date = :Planning_date WHERE id_task = :task_id;");
 
     $isInsertOk = $query->execute([
         ':task_id' => intval($task['task_id']),
         ':task_title' => htmlspecialchars($task['task_title']),
-        ':Planning_date' => htmlspecialchars($task['Planning_date'])
+        ':Planning_date' => $task['Planning_date']
     ]);
 
     if ($isInsertOk) {
@@ -402,7 +403,7 @@ function deleteTask(PDO $dbCo, int $targetId): void
  * @param integer $targetId the target id 
  * @return bool True for successful excution
  */
-function updateAllRanks(PDO $dbCo, int $targetId)
+function updateAllRanks(PDO $dbCo, int $targetId):bool
 {
 
     $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task -1 WHERE id_task > :targetId");
@@ -410,3 +411,15 @@ function updateAllRanks(PDO $dbCo, int $targetId)
         'targetId' => $targetId
     ]);
 }
+
+
+
+function getTodayTask(PDO $dbCo):array{
+
+    $query= $dbCo->prepare("SELECT title_task 
+    FROM task WHERE (DATE(planning_date) = timestamp(CURRENT_DATE()))
+    AND is_terminate = 0;");
+     $query->execute();
+     return $query->fetchAll();
+
+} 

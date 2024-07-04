@@ -33,7 +33,7 @@ if (!isset($_SESSION['myToken'])) {
 
   <?php
 
-
+  var_dump(getTodayTask($dbCo));
   echo getHtmlMessages($messages);
 
   echo getHtmlErrors($errors);
@@ -49,7 +49,7 @@ if (!isset($_SESSION['myToken'])) {
       <input type="hidden" name="action" value="insert">
       <textarea rows="auto" cols="100%" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
       <label for="start">Planning date:</label>
-      <input type="date" value="2017-06-01" name="Planning_date" />
+      <input type="date" value="2024-07-04" name="Planning_date" />
       <button type="submit"><img src="/img/add.svg" alt="add task"></button>
     </form>
 
@@ -61,7 +61,7 @@ if (!isset($_SESSION['myToken'])) {
       <?php
 
       $priorityTasks = getPriorityTasks($dbCo);
-      echo (showLsTasks($priorityTasks->fetchAll()));
+      echo (showLsTasks($priorityTasks));
       ?>
 
     </ol>
@@ -71,7 +71,7 @@ if (!isset($_SESSION['myToken'])) {
 
       <?php
       $nonTerminatedTasks = getNonTerminatedTask($dbCo);
-      echo (showLsTasks($nonTerminatedTasks->fetchAll()));
+      echo (showLsTasks($nonTerminatedTasks));
 
       ?>
 
