@@ -33,7 +33,6 @@ if (!isset($_SESSION['myToken'])) {
 
   <?php
 
-(getRankById( $dbCo,1)) ;
 
   echo getHtmlMessages($messages);
 

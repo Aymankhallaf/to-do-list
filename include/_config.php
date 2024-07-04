@@ -6,11 +6,11 @@ $errors = [
     'csrf' => 'Votre session est invalide.',
     'referer' => 'D\'où venez vous ?',
     'unvalid'=>"unvalide request",
-    'insert_ko' => 'Error insert the task.',
+    'invalid_task_id' => 'invalid task id',
     'archive_ko' => 'Archieved faild',
     'nb_char_ko' => "Unvalide number of characters",
     "no-request" => "there is no request",
-    "update_periorty_ko" => "update periorty value faild"
+    "update_priority_ko" => "update periorty value faild"
 ];
 
 $messages = [

@@ -271,70 +271,99 @@ function editTasktitle(PDO $dbCo, array $task): void
 
 
 /**
- * update rank by giving a value for a target id.
+ * Update rank by giving a value for a target id.
  *
  * @param PDO $dbCo database connection
- * @param integer $changingValue the giving value 
+ * @param integer $changingValue the given value 
  * @param integer $targetId the target id 
- * @return void
+ * @return bool True for successful excution
  */
-function updateRank(PDO $dbCo, int $changingValue, int $targetId): void
+function updateRank(PDO $dbCo, int $changingValue, int $targetId): bool
 {
-
-    $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task + :changingValue
-     WHERE id_task = :targetId");
-    $query->execute([
+    $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task + :changingValue WHERE id_task = :targetId");
+   return $query->execute([
         'targetId' => $targetId,
         'changingValue' => $changingValue
     ]);
 }
 
-
 /**
- *  $get id task by rank 
+ * Get id_task by rank.
  *
  * @param PDO $dbCo database connection
  * @param integer $targetRank rank
- * @return array task id empty if there is no result
+ * @return int|null task id or null if there is no result
  */
-function getIdByRank(PDO $dbCo, int $targetRank): array
+function getIdByRank(PDO $dbCo, int $targetRank): ?int
 {
     $query = $dbCo->prepare("SELECT id_task FROM task WHERE rank_task = :targetRank;");
     $query->execute([
         'targetRank' => $targetRank
     ]);
-
-    return $query->fetchAll();
+    return $query->fetchColumn() ?: null;
 }
 
 /**
- *  $get id task by rank 
+ * Get rank_task by id_task.
  *
  * @param PDO $dbCo database connection
- * @param integer $targetid task id
- * @return array rank id or empty if there is no result
+ * @param integer $targetId task id
+ * @return int|null rank_task or null if there is no result
  */
-function getRankById(PDO $dbCo, int $targetid): array
+function getRankById(PDO $dbCo, int $targetId): ?int
 {
-    $query = $dbCo->prepare("SELECT rank_task FROM task WHERE id_task = :targetid;");
+    $query = $dbCo->prepare("SELECT rank_task FROM task WHERE id_task = :targetId;");
     $query->execute([
-        'targetid' => $targetid
+        'targetId' => $targetId
     ]);
-    var_dump ($query->fetchAll());
-    return $query->fetchAll();
+    return $query->fetchColumn()?:null;
 }
 
 
-function swapRank($dbCo)
+/**
+ * swap rank (Up or down)task rank and save it in the database.
+ *  
+ * @param PDO $dbCo Connection to the database
+ * @param int $changingValue -1 to increase rank, +1 to decrease rank
+ * @param int $task_id ID of the task to change rank
+ * @return void
+ */
+function swapRank(PDO $dbCo, int $changingValue, int $task_id): void
 {
     try {
         $dbCo->beginTransaction();
+
+        $currentRank = getRankById($dbCo, $task_id);
+        if ($currentRank === null) {
+            $_SESSION['errors'] = 'invalid_task_id';
+            redirectToHeader("index.php");
+            return;
+        }
+
+        $targetRank = $currentRank + $changingValue;
+        $idToMove = getIdByRank($dbCo, $targetRank);
+
+        if ($idToMove !== null) {
+            updateRank($dbCo, -$changingValue, $idToMove);
+        }
+
+        $isUpdateOk = updateRank($dbCo, $changingValue, $task_id);
+
+        if ($isUpdateOk) {
+            $dbCo->commit();
+            $_SESSION['msg'] = 'update_periorty_ok';
+        } else {
+            $dbCo->rollBack();
+            $_SESSION['errors'] = 'update_periorty_KO';
+        }
+
     } catch (Exception $e) {
         $dbCo->rollBack();
-        addError('update_ko');
+        $_SESSION['errors'] = 'update_priority_ko';
     }
-}
 
+    redirectToHeader("index.php");
+}
 
 
 /**
