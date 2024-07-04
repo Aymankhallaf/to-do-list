@@ -271,49 +271,43 @@ function editTasktitle(PDO $dbCo, array $task): void
 
 
 /**
- * up or down task rank and save it in database(add - 1 to up its rank, add + 1 to its rank).
- *  
- * @param [type] $dbCo connection
- * @param [int] up -1 and down +1
+ * update rank by giving a value for a target id.
+ *
+ * @param PDO $dbCo database connection
+ * @param integer $changingValue the giving value 
+ * @param integer $targetId the target id 
  * @return void
  */
-// function editTaskRank($dbCo, int $value)
-// {
-//     if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
-
-//         $query = $dbCo->prepare("UPDATE task SET rank_task = COALESCE(rank_task, 0) + $value WHERE id_task <= :task_id;");
-
-//         $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
-
-//         if ($isInsertOk) {
-//             $_SESSION['msg'] = 'archive_ok';
-//         } else {
-//             $_SESSION['errors'] = 'archive_ko';
-//         }
-
-//         redirectToHeader("index.php");
-//     }
-// }
-
-
-function updateRank($dbCo, int $changingValue, int $targetId): void
+function updateRank(PDO $dbCo, int $changingValue, int $targetId): void
 {
 
-    $query = $dbCo->prepare("UPDATE task SET rank_task + $changingValue
+    $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task + :changingValue
      WHERE id_task = :targetId");
-    $isUpdateOk = $query->execute([
-        ':targetId' => $targetId,
-        ':changingValue' => $changingValue
+    $query->execute([
+        'targetId' => $targetId,
+        'changingValue' => $changingValue
     ]);
-    if ($isUpdateOk) {
-        $_SESSION['msg'] = 'archive_ok';
-    } else {
-        $_SESSION['errors'] = 'archive_ko';
-    }
-
-    redirectToHeader("index.php");
 }
 
+
+function getIdByRank(PDO $dbCo, int $targetRank): int
+{
+    $query = $dbCo->prepare("SELECT id_task FROM task WHERE rank_task = :targetRank;");
+    $query->execute([
+        'targetRank' => $targetRank
+    ]);
+    return intval($query->fetchColumn());
+}
+
+function swapRank($dbCo)
+{
+    try {
+        $dbCo->beginTransaction();
+    } catch (Exception $e) {
+        $dbCo->rollBack();
+        addError('update_ko');
+    }
+}
 
 
 
