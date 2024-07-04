@@ -42,7 +42,11 @@ if (!isset($_SESSION['myToken'])) {
 
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
-
+    <a href="'action.php?action=notif&&myToken=<?=$_SESSION['myToken']?>" aria-label="notification" class="notif" href="#" class="notification">
+      <p  class="notif-number"> <?php echo count(getTodayTask($dbCo)); ?></p>
+      <!-- <img src="/img/notif.svg" alt="notification" class="notif"></img> -->
+    </a>
+ 
 
     <form class="border-container write-task-form" action="action.php" method="post">
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
