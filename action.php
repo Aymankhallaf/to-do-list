@@ -40,3 +40,4 @@ if ($_REQUEST['action'] === 'insert') {
 } else if ($_REQUEST['action'] === 'delete') {
     deleteTask($dbCo, $_REQUEST['id_task']);
 }
+
