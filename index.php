@@ -33,7 +33,8 @@ if (!isset($_SESSION['myToken'])) {
 
   <?php
 
-  var_dump(getIdByRank( $dbCo,0)) ;
+(getRankById( $dbCo,1)) ;
+
   echo getHtmlMessages($messages);
 
   echo getHtmlErrors($errors);

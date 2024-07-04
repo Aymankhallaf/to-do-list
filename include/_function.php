@@ -290,14 +290,40 @@ function updateRank(PDO $dbCo, int $changingValue, int $targetId): void
 }
 
 
-function getIdByRank(PDO $dbCo, int $targetRank): int
+/**
+ *  $get id task by rank 
+ *
+ * @param PDO $dbCo database connection
+ * @param integer $targetRank rank
+ * @return array task id empty if there is no result
+ */
+function getIdByRank(PDO $dbCo, int $targetRank): array
 {
     $query = $dbCo->prepare("SELECT id_task FROM task WHERE rank_task = :targetRank;");
     $query->execute([
         'targetRank' => $targetRank
     ]);
-    return intval($query->fetchColumn());
+
+    return $query->fetchAll();
 }
+
+/**
+ *  $get id task by rank 
+ *
+ * @param PDO $dbCo database connection
+ * @param integer $targetid task id
+ * @return array rank id or empty if there is no result
+ */
+function getRankById(PDO $dbCo, int $targetid): array
+{
+    $query = $dbCo->prepare("SELECT rank_task FROM task WHERE id_task = :targetid;");
+    $query->execute([
+        'targetid' => $targetid
+    ]);
+    var_dump ($query->fetchAll());
+    return $query->fetchAll();
+}
+
 
 function swapRank($dbCo)
 {
