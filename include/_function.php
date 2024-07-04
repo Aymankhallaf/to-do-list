@@ -100,7 +100,6 @@ function verifyToken(string $redirectUrl = 'index.php'): void
  */
 function verifyIdTask(string $redirectUrl = 'index.php'): void
 {
-
 }
 
 
@@ -222,53 +221,52 @@ function addTask(PDO $dbCo): void
 
 /**
  * Archieves task "set terminted task to true(it won't be shown in home page)"
- *
+ * @param int $task_id the task id
  * @param PDO $dbCo connection database
  * @return void
  */
-function archiveTask(PDO $dbCo, int $task_id):void
+function archiveTask(PDO $dbCo, int $task_id): void
 {
 
-        $query = $dbCo->prepare("UPDATE task SET is_terminate = '1' WHERE id_task = :task_id;");
+    $query = $dbCo->prepare("UPDATE task SET is_terminate = '1' WHERE id_task = :task_id;");
 
-        $isInsertOk = $query->execute(['task_id' => $task_id]);
+    $isInsertOk = $query->execute(['task_id' => $task_id]);
 
-        if ($isInsertOk) {
-            $_SESSION['msg'] = 'archive_ok';
-        } else {
-            $_SESSION['errors'] = 'archive_ko';
-        }
-
-        redirectToHeader("index.php");
+    if ($isInsertOk) {
+        $_SESSION['msg'] = 'archive_ok';
+    } else {
+        $_SESSION['errors'] = 'archive_ko';
     }
+
+    redirectToHeader("index.php");
+}
 
 
 
 /**
  * edit task title and save it in database.
- *  
+ * @param array $task_id the task array
  * @param PDO $dbCo connection database
  * @return void
  */
-function editTasktitle(PDO $dbCo): void
+function editTasktitle(PDO $dbCo, array $task): void
 {
     verifyNbChars(255);
+    $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;UPDATE task SET Planning_date = :Planning_date WHERE id_task = :task_id;");
 
-        $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;UPDATE task SET Planning_date = :Planning_date WHERE id_task = :task_id;");
+    $isInsertOk = $query->execute([
+        ':task_id' => intval($task['task_id']),
+        ':task_title' => htmlspecialchars($task['task_title']),
+        ':Planning_date' => htmlspecialchars($task['Planning_date'])
+    ]);
 
-        $isInsertOk = $query->execute([
-            ':task_id' => intval($_REQUEST['task_id']),
-            ':task_title' => htmlspecialchars($_REQUEST['task_title']),
-            ':Planning_date' => htmlspecialchars($_REQUEST['Planning_date'])
-        ]);
-
-        if ($isInsertOk) {
-            $_SESSION['msg'] = 'insert_ok';
-        } else {
-            $_SESSION['errors'] = 'insert_ko';
-        }
-        redirectToHeader('index.php');
+    if ($isInsertOk) {
+        $_SESSION['msg'] = 'insert_ok';
+    } else {
+        $_SESSION['errors'] = 'insert_ko';
     }
+    redirectToHeader('index.php');
+}
 
 
 
@@ -309,18 +307,17 @@ function editTasktitle(PDO $dbCo): void
 function deleteTask(PDO $dbCo): void
 {
 
-        $query = $dbCo->prepare("DELETE FROM task WHERE id_task = :task_id;");
+    $query = $dbCo->prepare("DELETE FROM task WHERE id_task = :task_id;");
 
-        $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
+    $isInsertOk = $query->execute(['task_id' => intval($_REQUEST['id_task'])]);
 
-        if ($isInsertOk) {
-            $_SESSION['msg'] = 'archive_ok';
-        } else {
-            $_SESSION['errors'] = 'archive_ko';
-        }
+    if ($isInsertOk) {
+        $_SESSION['msg'] = 'archive_ok';
+    } else {
+        $_SESSION['errors'] = 'archive_ko';
+    }
 
-        redirectToHeader("index.php");
-    
+    redirectToHeader("index.php");
 }
 
 
