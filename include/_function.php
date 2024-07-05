@@ -416,10 +416,19 @@ function updateAllRanks(PDO $dbCo, int $targetId):bool
 
 function getTodayTask(PDO $dbCo):array{
 
-    $query= $dbCo->prepare("SELECT title_task 
+    $query= $dbCo->prepare("SELECT title_task
     FROM task WHERE (DATE(planning_date) = timestamp(CURRENT_DATE()))
     AND is_terminate = 0;");
      $query->execute();
      return $query->fetchAll();
 
 } 
+
+function showTasktitle(array $lsttasks ){
+    $li = '';
+    foreach ($lsttasks as $task) {
+        $li .= '<li class="border-container task-lst-item js-drage" draggable="true">
+        <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>';
+    }
+    return $li;
+}

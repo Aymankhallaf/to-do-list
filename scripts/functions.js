@@ -10,7 +10,7 @@ export function editTask(taskTitle, PlanningDate,injectedId) {
     clone.getElementById("task-title-textarea").innerText = taskTitle;
     const [day, month, year] = PlanningDate.split('/');
     const formattedDate = `${year}-${month}-${day}`;
-    clone.getElementById("Planning_date").value = formattedDate;
+    clone.querySelector(".js-Planning_date").value = formattedDate;
     clone.querySelector(".js-task-id").value = injectedId;
     const injected = document.getElementById(injectedId);
     injected.appendChild(clone);

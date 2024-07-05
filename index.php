@@ -40,20 +40,14 @@ if (!isset($_SESSION['myToken'])) {
 
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
-    <a  class="notif" href="#" class="notification">
-      <p class="notif-number"> </p>
-      <?php   ?>
-
-      <a aria-label="notification" class="dropdown ">
+        <a aria-label="notification" class="dropdown">
         <button class="dropbtn notif"><?php echo count(getTodayTask($dbCo)); ?></button>
         <ul class="dropdown-content">
-          <a href="#">Link 1</a>
-          <a href="#">Link 2</a>
-          <a href="#">Link 3</a>
+          <?php
+          $todayNotif = getTodayTask($dbCo);
+          echo (showTasktitle($todayNotif)); ?>
         </ul>
       </a>
-      <!-- <img src="/img/notif.svg" alt="notification" class="notif"></img> -->
-    </a>
 
 
     <form class="border-container write-task-form" action="action.php" method="post">
@@ -105,7 +99,7 @@ if (!isset($_SESSION['myToken'])) {
       <input class="js-task-id" type="hidden" name="task_id" value="">
       <textarea rows="auto" cols="100%" type="text" class="edit-task-title" id="task-title-textarea" name="task_title" required></textarea>
       <label for="start">Planning date:</label>
-      <input value="" id="Planning_date" type="date" name="Planning_date" />
+      <input value="" type="date" name="Planning_date" class="js-Planning_date"/>
       <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
     </form>
   </template>
