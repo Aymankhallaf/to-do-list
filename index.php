@@ -3,6 +3,7 @@ session_start();
 include 'include/_connection.php';
 include 'include/_config.php';
 include 'include/_function.php';
+include 'include/_generateHtml.php';
 
 // Create session token
 if (!isset($_SESSION['myToken'])) {
@@ -71,13 +72,23 @@ if (!isset($_SESSION['myToken'])) {
       ?>
 
     </ol>
-
     <h2 class="today-task">Today’s tasks</h2>
     <ol id="today-task-lst" class="task-lst">
 
       <?php
       $nonTerminatedTasks = getNonTerminatedTask($dbCo);
       echo (showLsTasks($nonTerminatedTasks));
+
+      ?>
+
+    </ol>
+
+    <h2 class="today-task">Terminated tasks</h2>
+    <ol id="today-task-lst" class="task-lst">
+
+      <?php
+      $terminatedTasks = getTerminatedTask($dbCo);
+      echo (addHtmlTags($terminatedTasks));
 
       ?>
 

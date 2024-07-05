@@ -123,6 +123,9 @@ function verifyNbChars(int $maxNumber): void
 }
 
 
+
+
+
 /**
  * get non terminated tasks order by creation date order.
  *
@@ -131,7 +134,7 @@ function verifyNbChars(int $maxNumber): void
  */
 function getNonTerminatedTask(PDO $dbCo): array
 {
-    $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') as planning_date FROM task WHERE is_terminate = 0 AND rank_task is NULL ORDER BY creation_date DESC;");
+    $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') AS planning_date FROM task WHERE is_terminate = 0 AND rank_task is NULL ORDER BY creation_date DESC;");
     $query->execute();
     return $query->fetchAll();
 }
@@ -150,14 +153,28 @@ function getPriorityTasks(PDO $dbCo): array
     return $query->fetchAll();
 }
 
+
+/**
+ * get  terminated tasks .
+ *
+ * @param PDO $dbCo the class PDO who mange the database connection
+ * @return array  of tasks
+ */
+function getTerminatedTask(PDO $dbCo): array
+{
+    $query = $dbCo->prepare("SELECT id_task, title_task, planning_date FROM task WHERE is_terminate = 0;");
+    $query->execute();
+    return $query->fetchAll();
+}
+
 /**
  * 
- * show all the tasks in an array
+ * add html tags"li + p + a (delete, archive,..  ) all the tasks in an array
  *
  * @param array $lsttasks a list of tasks
  * @return string string of html tages + task
  */
-function showLsTasks(array $lsttasks): string
+function addHtmlTags(array $lsttasks): string
 {
 
     $li = '';
@@ -173,12 +190,55 @@ function showLsTasks(array $lsttasks): string
         <button id="' . $task['id_task'] . '" class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
             <img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false">
         </button>
-        <a href="action.php?action=up_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
-            <img aria-hidden="true" src="/img/up_rank.svg" alt="priority task" draggable="false">
+        <a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+            <img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false">
         </a>
-        <a href="action.php?action=down_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
-            <img aria-hidden="true" src="/img/down_rank.svg" alt="priority task" draggable="false">
+      </li>';
+    }
+    return $li;
+};
+
+/**
+ * add rank html.
+ *
+ * @param array $task a task.
+ * @return string a html task.
+ */
+function addRankhtml(array $task):string{
+
+   return ' <a href="action.php?action=up_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+    <img aria-hidden="true" src="/img/up_rank.svg" alt="priority task" draggable="false">
+</a>
+<a href="action.php?action=down_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+    <img aria-hidden="true" src="/img/down_rank.svg" alt="priority task" draggable="false">
+</a>';
+}
+
+
+/**
+ * 
+ * show all the tasks in an array
+ *
+ * @param array $lsttasks a list of tasks
+ * @return string string of html tages + task
+ */
+function showLsTasks(array $lsttasks): string
+{
+
+    $li = '';
+    foreach ($lsttasks as $task) {
+        $rankTag=addRankhtml($task);
+        $li .= '<li data-id="' . $task['id_task'] . '" id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
+        <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
+        <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1" draggable="false">
+        <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
+        <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
+        <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+            <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
         </a>
+        <button id="' . $task['id_task'] . '" class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
+            <img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false">
+        </button>'.$rankTag.'
         <a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
             <img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false">
         </a>
@@ -379,7 +439,7 @@ function deleteTask(PDO $dbCo, int $targetId): void
         $query = $dbCo->prepare("DELETE FROM task WHERE id_task = :task_id;");
 
         $isDeleteOk = $query->execute(['task_id' => $targetId]);
-        $isUpdateOk= updateAllRanks($dbCo,$targetId);
+        $isUpdateOk = updateAllRanks($dbCo, $targetId);
 
         if ($isDeleteOk && $isUpdateOk) {
             $dbCo->commit();
@@ -403,7 +463,7 @@ function deleteTask(PDO $dbCo, int $targetId): void
  * @param integer $targetId the target id 
  * @return bool True for successful excution
  */
-function updateAllRanks(PDO $dbCo, int $targetId):bool
+function updateAllRanks(PDO $dbCo, int $targetId): bool
 {
 
     $query = $dbCo->prepare("UPDATE task SET rank_task = rank_task -1 WHERE id_task > :targetId");
@@ -414,17 +474,31 @@ function updateAllRanks(PDO $dbCo, int $targetId):bool
 
 
 
-function getTodayTask(PDO $dbCo):array{
+/**
+ * get planning today's tasks
+ *
+ * @param PDO $dbCo data base connection
+ * @return array array of tasks
+ */
+function getTodayTask(PDO $dbCo): array
+{
 
-    $query= $dbCo->prepare("SELECT title_task
-    FROM task WHERE (DATE(planning_date) = timestamp(CURRENT_DATE()))
+    $query = $dbCo->prepare("SELECT title_task FROM task WHERE (DATE(planning_date) = timestamp(CURRENT_DATE()))
     AND is_terminate = 0;");
-     $query->execute();
-     return $query->fetchAll();
+    $query->execute();
+    return $query->fetchAll();
+}
 
-} 
 
-function showTasktitle(array $lsttasks ){
+
+/**
+ * add html to lst of task.
+ *
+ * @param array $lsttasks lst of tasks
+ * @return string html tag
+ */
+function showTasktitle(array $lsttasks): string
+{
     $li = '';
     foreach ($lsttasks as $task) {
         $li .= '<li class="border-container task-lst-item js-drage" draggable="true">
