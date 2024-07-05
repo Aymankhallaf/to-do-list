@@ -15,3 +15,5 @@ logs
 .idea/
 .vscode/
 *.sw*
+# Ignore composer
+vender

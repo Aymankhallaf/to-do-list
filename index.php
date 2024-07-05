@@ -10,7 +10,6 @@ if (!isset($_SESSION['myToken'])) {
 }
 
 
-
 ?>
 
 
@@ -41,11 +40,21 @@ if (!isset($_SESSION['myToken'])) {
 
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
-    <a  aria-label="notification" class="notif" href="#" class="notification">
-      <p  class="notif-number"> <?php echo count(getTodayTask($dbCo)); ?></p>
+    <a  class="notif" href="#" class="notification">
+      <p class="notif-number"> </p>
+      <?php   ?>
+
+      <a aria-label="notification" class="dropdown ">
+        <button class="dropbtn notif"><?php echo count(getTodayTask($dbCo)); ?></button>
+        <ul class="dropdown-content">
+          <a href="#">Link 1</a>
+          <a href="#">Link 2</a>
+          <a href="#">Link 3</a>
+        </ul>
+      </a>
       <!-- <img src="/img/notif.svg" alt="notification" class="notif"></img> -->
     </a>
- 
+
 
     <form class="border-container write-task-form" action="action.php" method="post">
       <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">

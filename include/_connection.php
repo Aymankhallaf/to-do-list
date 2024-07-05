@@ -1,9 +1,13 @@
 <?php
+require 'vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->safeLoad();
 try {
     $dbCo = new PDO(
-        'mysql:host=db;dbname=todolist;charset=utf8',
-        'php_connection',
-        'i3kB!r+$9K";K>a'
+      "mysql:host=" . $_ENV["DB_HOST"] . ";dbname=todolist;charset=utf8",
+      $_ENV["DB_USER"],
+      $_ENV["DB_PWD"]
     );
     $dbCo->setAttribute(
         PDO::ATTR_DEFAULT_FETCH_MODE,

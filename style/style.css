@@ -63,6 +63,48 @@ button {
     border-radius: 20px;
 }
 
+/*drop down*/
+.dropbtn {
+    color: white;
+    padding: 1rem;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 1rem 1rem;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {background-color: #f1f1f1}
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown:hover .dropbtn {
+    background-color: var(--orange);
+  }
+
+
+
 /*home page*/
 .main {
     margin: 0 1rem;
@@ -76,13 +118,19 @@ button {
 }
 
 /*notification*/
-.notif-number {
+.notif {
+    display: inline-block;
     color: var(--brown);
-    font-size: 5rem;
     background-image: url('data:image/svg+xml,<svg width="26" height="29" viewBox="0 0 26 29" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25.7141 18.1118L23.0725 15.534V12.1191C23.0695 9.75923 22.1699 7.48427 20.5478 5.73412C18.9256 3.98397 16.696 2.88297 14.2902 2.64402V0.69186H12.3386V2.64402C9.93281 2.88297 7.70325 3.98397 6.08107 5.73412C4.45889 7.48427 3.55931 9.75923 3.55628 12.1191V15.534L0.914758 18.1118C0.731745 18.2903 0.6289 18.5325 0.628845 18.785V21.6418C0.628845 21.8944 0.731654 22.1366 0.914654 22.3152C1.09765 22.4938 1.34586 22.5941 1.60466 22.5941H8.43535V23.334C8.41412 24.5421 8.85046 25.7153 9.66076 26.6289C10.4711 27.5425 11.5983 28.1321 12.8265 28.2849C13.5049 28.3505 14.1898 28.2769 14.8373 28.0687C15.4847 27.8605 16.0803 27.5224 16.5858 27.0761C17.0914 26.6298 17.4955 26.0851 17.7724 25.4772C18.0493 24.8693 18.1927 24.2116 18.1935 23.5464V22.5941H25.0242C25.283 22.5941 25.5312 22.4938 25.7142 22.3152C25.8972 22.1366 26 21.8944 26 21.6418V18.785C25.9999 18.5325 25.8971 18.2903 25.7141 18.1118ZM16.2419 23.5464C16.2419 24.304 15.9334 25.0307 15.3844 25.5664C14.8354 26.1022 14.0908 26.4032 13.3144 26.4032C12.538 26.4032 11.7934 26.1022 11.2444 25.5664C10.6954 25.0307 10.387 24.304 10.387 23.5464V22.5941H16.2419V23.5464ZM24.0484 20.6896H2.58047V19.1793L5.222 16.6015C5.40501 16.4229 5.50785 16.1807 5.50791 15.9282V12.1191C5.50791 10.0987 6.33038 8.16094 7.79438 6.73226C9.25838 5.30357 11.244 4.50095 13.3144 4.50095C15.3848 4.50095 17.3704 5.30357 18.8344 6.73226C20.2984 8.16094 21.1209 10.0987 21.1209 12.1191V15.9282C21.121 16.1807 21.2238 16.4229 21.4068 16.6015L24.0484 19.1793V20.6896Z" fill="%23FFCD00"/></svg>');    background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
 }
+
+.notif-number {
+font-size: 1rem;
+}
+
+
 
 /* write task*/
 input[type="text"] {
