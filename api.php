@@ -8,7 +8,8 @@ header('Content-type:application/json');
 
 
 if ($_REQUEST['action'] === 'archive') {
-    archiveTask($dbCo, $_REQUEST['id-task']);
-    if (isset($_REQUEST['id_task']) && is_numeric($_REQUEST['id_task'])) {
+    if (isset($_REQUEST['id-task']) && is_numeric($_REQUEST['id-task'])) {
+        archiveTask($dbCo, $_REQUEST['id-task']);
     }
+
 }

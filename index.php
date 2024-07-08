@@ -82,7 +82,7 @@ if (!isset($_SESSION['myToken'])) {
     </ol>
 
     <h2 class="today-task">Terminated tasks</h2>
-    <ol id="today-task-lst" class="task-lst">
+    <ol id="terminated-tasks" class="terminated-tasks">
 
       <?php
       $terminatedTasks = getTerminatedTask($dbCo);

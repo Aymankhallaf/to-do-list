@@ -162,7 +162,7 @@ input[type="text"] {
 
 /*tasks list*/
 
-.task-lst {
+.task-lst, .terminated-tasks {
     margin-top: 4rem;
     display: flex;
     flex-direction: column;

@@ -93,15 +93,28 @@ function verifyToken(string $redirectUrl = 'index.php'): void
     }
 }
 
+
 /**
- * verify session token
+ * Check for CSRF token
  *
- * @return void
+ * @return boolean Is there a valid toekn in user session ?
  */
-function verifyIdTask(string $redirectUrl = 'index.php'): void
+function isTokenOk(): bool
 {
+    return (!isset($_SESSION['myToken']) || !isset($_REQUEST['myToken']) || $_SESSION['myToken'] !== $_REQUEST['myToken']);
 }
 
+/**
+ * Check fo referer
+ *
+ * @return boolean Is the current referer valid ?
+ */
+function isServerOk(): bool
+{
+    global $globalUrl;
+    return isset($_SERVER['HTTP_REFERER'])
+        && str_contains($_SERVER['HTTP_REFERER'], $globalUrl);
+}
 
 
 
@@ -179,15 +192,15 @@ function addHtmlTags(array $lsttasks): string
 
     $li = '';
     foreach ($lsttasks as $task) {
-        $li .= '<li data-id="' . $task['id_task'] . '" id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
+        $li .= '<li data-id="' . $task['id_task'] .'" class="border-container task-lst-item js-drage" draggable="true">
         <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
-        <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1" draggable="false">
+        <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
         <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
-        <button class="js-archive" data-archive-id='.$task['id_task'].' draggable="false">
+        <button class="js-archive" data-archive-id=' . $task['id_task'] . ' draggable="false">
             <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
         </button>
-        <button id="' . $task['id_task'] . '" class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
+        <button " class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
             <img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false">
         </button>
         <a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
@@ -229,15 +242,15 @@ function showLsTasks(array $lsttasks): string
     $li = '';
     foreach ($lsttasks as $task) {
         $rankTag = addRankhtml($task);
-        $li .= '<li data-id="' . $task['id_task'] . '" id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
+        $li .= '<li data-id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
         <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
-        <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1" draggable="false">
+        <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
         <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
-      <button class="js-archive" data-archive-id='.$task['id_task'].' draggable="false">
+      <button class="js-archive" data-archive-id=' . $task['id_task'] . ' draggable="false">
             <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
         </button>
-        <button id="' . $task['id_task'] . '" class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
+        <button " class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
             <img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false">
         </button>' . $rankTag . '
         <a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
@@ -295,16 +308,13 @@ function archiveTask(PDO $dbCo, int $task_id): void
 
 
     if ($isArchive) {
-        echo json_encode([
-            'isOk' => $isArchive,
-            'id' => intval($task_id)
-        ]);
+        echo json_encode(['isOk' => $isArchive,
+            'id' => intval($task_id)]);
         $_SESSION['msg'] = 'archive_ok';
     } else {
         $_SESSION['errors'] = 'archive_ko';
     }
 
-    redirectToHeader("index.php");
 }
 
 
