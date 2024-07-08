@@ -193,7 +193,7 @@ function addHtmlTags(array $lsttasks): string
     $li = '';
     foreach ($lsttasks as $task) {
         $deleteTag = addDeletehtml($task);
-        $archiveTag = addArchivehtml($task,"unarchive");
+        $archiveTag = addArchivehtml($task, "unarchive");
         $li .= '<li data-id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
         <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
         <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" name="done" value="1" draggable="false">
@@ -228,7 +228,7 @@ function addArchivehtml(array $task, string $iconName): string
 {
 
     return '<button class="js-archive" data-archive-id=' . $task['id_task'] . ' draggable="false">
-    <img aria-hidden="true" src="/img/'.$iconName.'.svg" alt="archive task" draggable="false">
+    <img aria-hidden="true" src="/img/' . $iconName . '.svg" alt="$iconName task" draggable="false">
 </button>';
 }
 
@@ -263,13 +263,13 @@ function showLsTasks(array $lsttasks): string
     foreach ($lsttasks as $task) {
         $rankTag = addRankhtml($task);
         $deleteTag = addDeletehtml($task);
-        $archiveTag = addArchivehtml($task,"archive");
+        $archiveTag = addArchivehtml($task, "archive");
         $li .= '<li data-id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
         <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
         <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
         <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
-        '. $archiveTag . $rankTag . $deleteTag . '</li>';
+        ' . $archiveTag . $rankTag . $deleteTag . '</li>';
     }
     return $li;
 };
@@ -307,15 +307,21 @@ function addTask(PDO $dbCo): void
 
 
 /**
- * Archieves task "set terminted task to true(it won't be shown in home page)"
- * @param int $task_id the task id
- * @param PDO $dbCo connection database
+ * Archive/unarchive task.
+ * @param int $task_id the task id.
+ * @param PDO $dbCo connection database.
  * @return void
  */
 function archiveTask(PDO $dbCo, int $task_id): void
 {
 
-    $query = $dbCo->prepare("UPDATE task SET is_terminate = '1' WHERE id_task = :task_id;");
+
+    $query = $dbCo->prepare("UPDATE task
+    SET is_terminate = CASE 
+    WHEN is_terminate = 0 THEN 1 
+    ELSE 0 
+    END
+    WHERE id_task = :task_id;");
 
     $isArchive = $query->execute(['task_id' => $task_id]);
 

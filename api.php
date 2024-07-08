@@ -4,7 +4,7 @@ include 'include/_connection.php';
 include 'include/_function.php';
 include 'include/_config.php';
 
-header('Content-type:application/json');
+// header('Content-type:application/json');
 
 
 if ($_REQUEST['action'] === 'archive') {
