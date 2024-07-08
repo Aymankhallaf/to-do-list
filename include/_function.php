@@ -192,24 +192,45 @@ function addHtmlTags(array $lsttasks): string
 
     $li = '';
     foreach ($lsttasks as $task) {
-        $li .= '<li data-id="' . $task['id_task'] .'" class="border-container task-lst-item js-drage" draggable="true">
+        $deleteTag = addDeletehtml($task);
+        $archiveTag = addArchivehtml($task,"unarchive");
+        $li .= '<li data-id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
         <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
         <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
         <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
-        <button class="js-archive" data-archive-id=' . $task['id_task'] . ' draggable="false">
-            <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
-        </button>
-        <button " class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
-            <img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false">
-        </button>
-        <a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
-            <img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false">
-        </a>
-      </li>';
+       ' . $archiveTag . $deleteTag . '</li>';
     }
     return $li;
 };
+
+/**
+ * add delete html.
+ *
+ * @param array $task a task.
+ * @return string a html task.
+ */
+function addDeletehtml(array $task): string
+{
+
+    return '<a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+    <img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false">
+</a>';
+}
+
+/**
+ * add archieve html.
+ * @param string $task a name.
+ * @param array $task a task.
+ * @return string a html task.
+ */
+function addArchivehtml(array $task, string $iconName): string
+{
+
+    return '<button class="js-archive" data-archive-id=' . $task['id_task'] . ' draggable="false">
+    <img aria-hidden="true" src="/img/'.$iconName.'.svg" alt="archive task" draggable="false">
+</button>';
+}
 
 /**
  * add rank html.
@@ -228,7 +249,6 @@ function addRankhtml(array $task): string
 </a>';
 }
 
-
 /**
  * 
  * show all the tasks in an array
@@ -242,21 +262,14 @@ function showLsTasks(array $lsttasks): string
     $li = '';
     foreach ($lsttasks as $task) {
         $rankTag = addRankhtml($task);
+        $deleteTag = addDeletehtml($task);
+        $archiveTag = addArchivehtml($task,"archive");
         $li .= '<li data-id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
         <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
         <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
         <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
-      <button class="js-archive" data-archive-id=' . $task['id_task'] . ' draggable="false">
-            <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
-        </button>
-        <button " class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
-            <img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false">
-        </button>' . $rankTag . '
-        <a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
-            <img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false">
-        </a>
-      </li>';
+        '. $archiveTag . $rankTag . $deleteTag . '</li>';
     }
     return $li;
 };
@@ -308,13 +321,14 @@ function archiveTask(PDO $dbCo, int $task_id): void
 
 
     if ($isArchive) {
-        echo json_encode(['isOk' => $isArchive,
-            'id' => intval($task_id)]);
+        echo json_encode([
+            'isOk' => $isArchive,
+            'id' => intval($task_id)
+        ]);
         $_SESSION['msg'] = 'archive_ok';
     } else {
         $_SESSION['errors'] = 'archive_ko';
     }
-
 }
 
 
