@@ -148,7 +148,7 @@ function getNonTerminatedTask(PDO $dbCo): array
  */
 function getPriorityTasks(PDO $dbCo): array
 {
-    $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') as planning_date FROM task WHERE is_terminate = 0 AND rank_task IS NOT NULL  ORDER BY rank_task ASC;");
+    $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') AS planning_date FROM task WHERE is_terminate = 0 AND rank_task IS NOT NULL  ORDER BY rank_task ASC;");
     $query->execute();
     return $query->fetchAll();
 }
@@ -162,7 +162,7 @@ function getPriorityTasks(PDO $dbCo): array
  */
 function getTerminatedTask(PDO $dbCo): array
 {
-    $query = $dbCo->prepare("SELECT id_task, title_task, planning_date FROM task WHERE is_terminate = 0;");
+    $query = $dbCo->prepare("SELECT id_task, title_task, DATE_FORMAT(planning_date, '%d/%m/%Y') AS planning_date FROM task WHERE is_terminate = 1;");
     $query->execute();
     return $query->fetchAll();
 }
@@ -184,9 +184,9 @@ function addHtmlTags(array $lsttasks): string
         <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
         <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
-        <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+        <button class="js-archive" data-archive-id='.$task['id_task'].' draggable="false">
             <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
-        </a>
+        </button>
         <button id="' . $task['id_task'] . '" class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
             <img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false">
         </button>
@@ -204,9 +204,10 @@ function addHtmlTags(array $lsttasks): string
  * @param array $task a task.
  * @return string a html task.
  */
-function addRankhtml(array $task):string{
+function addRankhtml(array $task): string
+{
 
-   return ' <a href="action.php?action=up_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+    return ' <a href="action.php?action=up_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
     <img aria-hidden="true" src="/img/up_rank.svg" alt="priority task" draggable="false">
 </a>
 <a href="action.php?action=down_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
@@ -227,18 +228,18 @@ function showLsTasks(array $lsttasks): string
 
     $li = '';
     foreach ($lsttasks as $task) {
-        $rankTag=addRankhtml($task);
+        $rankTag = addRankhtml($task);
         $li .= '<li data-id="' . $task['id_task'] . '" id="' . $task['id_task'] . '" class="border-container task-lst-item js-drage" draggable="true">
         <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
         <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" id="done" name="done" value="1" draggable="false">
         <p class="js-task-title_txt" draggable="false">' . $task['title_task'] . '</p>
         <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime="' . $task['planning_date'] . '">' . $task['planning_date'] . '</time>
-        <a href="action.php?action=archive&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+      <button class="js-archive" data-archive-id='.$task['id_task'].' draggable="false">
             <img aria-hidden="true" src="/img/archive.svg" alt="archive task" draggable="false">
-        </a>
+        </button>
         <button id="' . $task['id_task'] . '" class="task-edit js-edit-task-title" type="submit" role="edit-task" draggable="false">
             <img aria-hidden="true" src="/img/edit.svg" alt="edit task" draggable="false">
-        </button>'.$rankTag.'
+        </button>' . $rankTag . '
         <a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
             <img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false">
         </a>
@@ -290,9 +291,14 @@ function archiveTask(PDO $dbCo, int $task_id): void
 
     $query = $dbCo->prepare("UPDATE task SET is_terminate = '1' WHERE id_task = :task_id;");
 
-    $isInsertOk = $query->execute(['task_id' => $task_id]);
+    $isArchive = $query->execute(['task_id' => $task_id]);
 
-    if ($isInsertOk) {
+
+    if ($isArchive) {
+        echo json_encode([
+            'isOk' => $isArchive,
+            'id' => intval($task_id)
+        ]);
         $_SESSION['msg'] = 'archive_ok';
     } else {
         $_SESSION['errors'] = 'archive_ko';

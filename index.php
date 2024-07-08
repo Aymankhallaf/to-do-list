@@ -3,7 +3,6 @@ session_start();
 include 'include/_connection.php';
 include 'include/_config.php';
 include 'include/_function.php';
-include 'include/_generateHtml.php';
 
 // Create session token
 if (!isset($_SESSION['myToken'])) {
@@ -24,12 +23,11 @@ if (!isset($_SESSION['myToken'])) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
   <link href="/style/style.css" rel="stylesheet" />
-
   <title>TO DO LIST</title>
 
 </head>
 
-<body>
+<body token="">
 
   <?php
 
@@ -52,7 +50,7 @@ if (!isset($_SESSION['myToken'])) {
 
 
     <form class="border-container write-task-form" action="action.php" method="post">
-      <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
+      <input type="hidden" id="myToken" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="insert">
       <textarea rows="auto" cols="100%" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
       <label for="start">Planning date:</label>
