@@ -1,4 +1,4 @@
-import { listenToEditBtn, addTaskHtml, archive } from './functions.js'
+import { listenToEditBtn, addTaskHtml, archive } from './_functions.js'
 
 
 const editButtons = document.querySelectorAll(".js-edit-task-title");
@@ -53,7 +53,7 @@ function addTask() {
                     console.log("error api data");
                     return;
                 }
-                getElementById("task-title-textarea").innerText="";
+                document.getElementById("task-title-textarea").innerText="";
                 addTaskHtml(data);
 
 

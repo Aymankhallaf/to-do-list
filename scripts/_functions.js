@@ -26,7 +26,7 @@ export function listenToEditBtn(editButtons) {
     editButtons.forEach(b => {
         b.addEventListener("click", (e) => {
             let li = e.currentTarget.parentNode;
-            let txt = li.querySelector(".js-task-title_txt").innerText;
+            let txt = li.querySelector(".js-task-title-txt").innerText;
             let PlanningDate = li.querySelector('.js-planning-date').dateTime;
             li.innerText = '';
             editTask(txt, PlanningDate, li.dataset.id);
@@ -54,7 +54,7 @@ export function addTaskHtml(task) {
 
 
 
-function archive(id) {
+export function archive(id) {
 
     callApi('PUT', {
         action: 'archive',
