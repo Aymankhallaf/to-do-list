@@ -17,10 +17,10 @@ verifyToken();
 if ($_REQUEST['action'] === 'insert') {
 
     //call the function to insert task to database
-    addTask($dbCo);
+    // addTask($dbCo);
 }
  else if ($_REQUEST['action'] === 'edit') {
-    verifyNbChars(255);
+    // verifyNbChars(255);
     if (isset($_REQUEST['task_id']) && is_numeric($_REQUEST['task_id'])) {
 
         editTasktitle($dbCo, $_REQUEST);

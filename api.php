@@ -4,7 +4,7 @@ include 'include/_connection.php';
 include 'include/_function.php';
 include 'include/_config.php';
 
-header('Content-s:application/json');
+// header('Content-s:application/json');
 $inputData = json_decode(file_get_contents('php://input'), true);
 
 if ($inputData['action'] === 'archive'&& $_SERVER['REQUEST_METHOD']==='PUT') {
@@ -16,5 +16,5 @@ if ($inputData['action'] === 'archive'&& $_SERVER['REQUEST_METHOD']==='PUT') {
 
 if ($inputData['action'] === 'add'&& $_SERVER['REQUEST_METHOD']==='PUT') {
 
-    
+    addTask($dbCo,$inputData );
 }

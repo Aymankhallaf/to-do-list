@@ -130,9 +130,8 @@ function verifyNbChars(int $maxNumber, string $taskTitle): void
 {
     if (isset($taskTitle)) {
 
-        if (strlen($taskTitle) > $maxNumber || strlen($_REQUEST['task_title']) < 0) {
+        if (strlen($taskTitle) > $maxNumber || strlen($taskTitle) < 0) {
             addError('nb_char_ko');
-            redirectToHeader('index.php');
         }
     }
 }
@@ -286,25 +285,28 @@ function showLsTasks(array $lsttasks): string
 function addTask(PDO $dbCo, array $task ): void
 {
 
-    verifyNbChars(255);
+    verifyNbChars(255, $task['titleTask']);
     $insertTask = $dbCo->prepare("INSERT INTO task 
-        (title_task, creation_date) VALUES 
-        (:task_title, CURRENT_DATE())");
+        (title_task, creation_date, planning_date) VALUES 
+        (:task_title, CURRENT_DATE(),:planning_date);");
 
 
     $bindValue = ([
-        ':task_title' => htmlspecialchars($_REQUEST['task_title'])
+        ':task_title' => htmlspecialchars($task['titleTask']),
+        ':planning_date' => $task['planningDate']
     ]);
 
     $isInsertOk = $insertTask->execute($bindValue);
 
     if ($isInsertOk) {
+        echo json_encode([
+            'isOk' => $isInsertOk
+        ]);
         $_SESSION['msg'] = 'insert_ok';
     } else {
         $_SESSION['errors'] = 'insert_ko';
         addError('insert_ko');
     }
-    redirectToHeader('index.php');
 }
 
 
@@ -355,7 +357,7 @@ function archiveTask(PDO $dbCo, int $task_id): void
  */
 function editTasktitle(PDO $dbCo, array $task): void
 {
-    verifyNbChars(255);
+    // verifyNbChars(255, );
     $query = $dbCo->prepare("UPDATE task SET title_task = :task_title WHERE id_task = :task_id;
     UPDATE task SET Planning_date = :Planning_date WHERE id_task = :task_id;");
 
