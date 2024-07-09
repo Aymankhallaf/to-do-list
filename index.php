@@ -108,7 +108,7 @@ if (!isset($_SESSION['myToken'])) {
       <input class="js-task-id" type="hidden" name="task_id" value="">
       <textarea rows="auto" cols="100%" type="text" class="edit-task-title" id="task-title-textarea" name="task_title" required></textarea>
       <label for="start">Planning date:</label>
-      <input value="" type="date" name="Planning_date" class="js-Planning_date" />
+      <input value="" type="date" name="Planning_date" class="js-Planning_date"/>
       <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
     </form>
   </template>
@@ -137,6 +137,25 @@ if (!isset($_SESSION['myToken'])) {
 
           <script type="module" src="scripts/script.js"></script>
 
+  <template id="add-title-task-template">
+    <li data-id="" class="border-container task-lst-item js-drage" draggable="true">
+      <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
+      <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" name="done" value="1" draggable="false">
+      <p class="js-task-title_txt" draggable="false"></p>
+      <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime=""></time>
+      <button class="js-archive" data-archive-id='' draggable="false">
+        <img aria-hidden="true" src="/img/' . $iconName . '.svg" alt="$iconName task" draggable="false"></button>
+      <a href="action.php?action=up_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+        <img aria-hidden="true" src="/img/up_rank.svg" alt="priority task" draggable="false">
+      </a>
+      <a href="action.php?action=down_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+        <img aria-hidden="true" src="/img/down_rank.svg" alt="priority task" draggable="false">
+      </a><a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+        <img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false">
+      </a>
+    </li>;
+
+    <template>
 
 </body>
 
