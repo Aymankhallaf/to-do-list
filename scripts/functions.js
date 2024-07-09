@@ -42,13 +42,38 @@ export function listenToEditBtn(editButtons) {
 export function addTaskHtml(task) {
     const template = document.getElementById("show-task-template");
     let clone = document.importNode(template.content, true);
-    console.log(clone)
-    console.log(clone.querySelector(".js-task-title-txt"))
     clone.querySelector(".js-task-title-txt").innerText = task["taskTitle"];
-    clone.querySelector(".js-Planning_date").value = task["taskTitle"];
-    clone.querySelector(".js-Planning_date").datetime = task["planningDate"];
-    clone.querySelector(".js-task-id").value = task["idTask"];
+    clone.querySelector(".js-planning-date").value = task["taskTitle"];
+    clone.querySelector(".js-planning-date").datetime = task["planningDate"];
+    clone.querySelector("[data-id]").dataId = task["idTask"];
     const injected = document.getElementById("today-task-lst");
-    injected.appendChild(clone);
+    injected.prepend(clone);
 
+}
+
+
+
+
+function archive(id) {
+
+    callApi('PUT', {
+        action: 'archive',
+        idTask: id,
+        token: document.getElementById("myToken").value
+    })
+        .then(data => {
+            if (!data.isOk) {
+                console.log("error api data");
+                return;
+            }
+            if (data.archive == "1") {
+
+                document.getElementById("terminated-tasks").prepend(document.querySelector("[data-id='" + data.id + "']"));
+            }
+            else if (data.archive == "0") {
+                document.getElementById("priority-task-lst").prepend(document.querySelector("[data-id='" + data.id + "']"));
+            }
+
+
+        })
 }

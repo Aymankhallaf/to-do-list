@@ -7,7 +7,7 @@ include 'include/_config.php';
 // header('Content-s:application/json');
 $inputData = json_decode(file_get_contents('php://input'), true);
 
-if ($inputData['action'] === 'archive'&& $_SERVER['REQUEST_METHOD']==='PUT') {
+if ($inputData['action'] === 'archive'&& $_SERVER['REQUEST_METHOD']==='POST') {
     if (isset($inputData['idTask']) && is_numeric($inputData['idTask'])) {
         archiveTask($dbCo, $inputData['idTask']);
     }

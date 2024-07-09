@@ -1,10 +1,9 @@
-import { listenToEditBtn } from './functions.js'
+import { listenToEditBtn, addTaskHtml, archive } from './functions.js'
 
 
 const editButtons = document.querySelectorAll(".js-edit-task-title");
 
 listenToEditBtn(editButtons);
-
 
 
 
@@ -32,30 +31,6 @@ async function callApi(method, param) {
 }
 
 
-function archive(id) {
-
-    callApi('PUT', {
-        action: 'archive',
-        idTask: id,
-        token: document.getElementById("myToken").value
-    })
-        .then(data => {
-            if (!data.isOk) {
-                console.log("error api data");
-                return;
-            }
-            if (data.archive == "1") {
-
-                document.getElementById("terminated-tasks").prepend(document.querySelector("[data-id='" + data.id + "']"));
-            }
-            else if (data.archive == "0") {
-                document.getElementById("priority-task-lst").prepend(document.querySelector("[data-id='" + data.id + "']"));
-            }
-
-
-        })
-}
-
 
 document.querySelectorAll('[data-archive-id]').forEach(
     (b) => b.addEventListener('click',
@@ -73,13 +48,13 @@ function addTask() {
                 titleTask: document.getElementById("task-title-textarea").value,
                 planningDate: document.getElementById("planning-date").value
             }
-            callApi('PUT', newTask).then(data => {
+            callApi('POST', newTask).then(data => {
                 if (!data.isOk) {
                     console.log("error api data");
                     return;
                 }
-                console.log(data);
-                // addTaskHtml(data);
+                getElementById("task-title-textarea").innerText="";
+                addTaskHtml(data);
 
 
             })
