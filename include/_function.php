@@ -118,17 +118,19 @@ function isServerOk(): bool
 
 
 
-/**
- *  verify the length of the task
- *
- * @param integer $maxNumber the maximum lenght of characters.
- * @return void
- */
-function verifyNbChars(int $maxNumber): void
-{
-    if (isset($_REQUEST['task_title'])) {
 
-        if (strlen($_REQUEST['task_title']) > $maxNumber || strlen($_REQUEST['task_title']) < 0) {
+ /**
+  * verify the length of the task
+  *
+  * @param integer $maxNumber the maximum lenght of characters.
+  * @param string $taskTitle the task title
+  * @return void
+  */
+function verifyNbChars(int $maxNumber, string $taskTitle): void
+{
+    if (isset($taskTitle)) {
+
+        if (strlen($taskTitle) > $maxNumber || strlen($_REQUEST['task_title']) < 0) {
             addError('nb_char_ko');
             redirectToHeader('index.php');
         }
@@ -281,7 +283,7 @@ function showLsTasks(array $lsttasks): string
  * @param PDO $dbCo connection 
  * @return void
  */
-function addTask(PDO $dbCo): void
+function addTask(PDO $dbCo, array $task ): void
 {
 
     verifyNbChars(255);

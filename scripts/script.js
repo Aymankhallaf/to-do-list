@@ -64,15 +64,31 @@ document.querySelectorAll('[data-archive-id]').forEach(
 
 
 
-document.getElementById("add-task").addEventListener('submit',
-    function (e) {
-        e.preventDefault();
-        let newTask = {
-            myToken: document.getElementById("myToken").value,
-            titleTask: document.getElementById("task-title-textarea").value,
-            planningDate: document.getElementById("planning-date").value
-        }
-        console.log(newTask);
-        
-    });
-// 
+function getFormData() {
+
+    document.getElementById("add-task").addEventListener('submit',
+        function (e) {
+            e.preventDefault();
+            let newTask = {
+                action: "add",
+                myToken: document.getElementById("myToken").value,
+                titleTask: document.getElementById("task-title-textarea").value,
+                planningDate: document.getElementById("planning-date").value
+            }
+            console.log(newTask);
+            return newTask
+
+        });
+}
+
+let task = getFormData()
+function addTask(task) {
+
+    callApi('PUT', {
+        task
+    })
+        .then(data => {
+            console.log(data);
+
+        })
+}

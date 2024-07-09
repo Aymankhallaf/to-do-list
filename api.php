@@ -13,3 +13,8 @@ if ($inputData['action'] === 'archive'&& $_SERVER['REQUEST_METHOD']==='PUT') {
     }
 
 }
+
+if ($inputData['action'] === 'add'&& $_SERVER['REQUEST_METHOD']==='PUT') {
+
+    
+}
