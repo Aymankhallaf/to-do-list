@@ -49,13 +49,13 @@ if (!isset($_SESSION['myToken'])) {
       </a>
 
 
-    <form class="border-container write-task-form" action="action.php" method="post">
+    <form id="add-task" class="border-container write-task-form">
       <input type="hidden" id="myToken" name="myToken" value="<?= $_SESSION['myToken'] ?>">
       <input type="hidden" name="action" value="insert">
       <textarea rows="auto" cols="100%" type="text" class="write-task-title" id="task-title-textarea" name="task_title" required></textarea>
-      <label for="start">Planning date:</label>
-      <input type="date" value="2024-07-04" name="Planning_date" />
-      <button type="submit"><img src="/img/add.svg" alt="add task"></button>
+      <label for="planning-date">Planning date:</label>
+      <input id="planning-date" type="date" value="2024-07-04" name="planning-date" />
+      <button id="submit-task" type="submit"><img src="/img/add.svg" alt="add task"></button>
     </form>
 
 

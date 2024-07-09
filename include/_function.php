@@ -325,10 +325,16 @@ function archiveTask(PDO $dbCo, int $task_id): void
 
     $isArchive = $query->execute(['task_id' => $task_id]);
 
+    $querySelect = $dbCo->prepare("SELECT is_terminate FROM task
+    WHERE id_task = :task_id;");
+
+    $querySelect->execute(['task_id' => $task_id]);
+    $terminateValue = $querySelect->fetchColumn();
 
     if ($isArchive) {
         echo json_encode([
             'isOk' => $isArchive,
+            'archive' => $terminateValue,
             'id' => intval($task_id)
         ]);
         $_SESSION['msg'] = 'archive_ok';

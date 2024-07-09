@@ -4,12 +4,12 @@ include 'include/_connection.php';
 include 'include/_function.php';
 include 'include/_config.php';
 
-// header('Content-type:application/json');
+header('Content-s:application/json');
+$inputData = json_decode(file_get_contents('php://input'), true);
 
-
-if ($_REQUEST['action'] === 'archive') {
-    if (isset($_REQUEST['id-task']) && is_numeric($_REQUEST['id-task'])) {
-        archiveTask($dbCo, $_REQUEST['id-task']);
+if ($inputData['action'] === 'archive'&& $_SERVER['REQUEST_METHOD']==='PUT') {
+    if (isset($inputData['idTask']) && is_numeric($inputData['idTask'])) {
+        archiveTask($dbCo, $inputData['idTask']);
     }
 
 }
