@@ -39,14 +39,14 @@ if (!isset($_SESSION['myToken'])) {
 
   <main class="main">
     <h1 class="main-title">TO DO LIST</h1>
-        <a aria-label="notification" class="dropdown">
-        <button class="dropbtn notif"><?php echo count(getTodayTask($dbCo)); ?></button>
-        <ul class="dropdown-content">
-          <?php
-          $todayNotif = getTodayTask($dbCo);
-          echo (showTasktitle($todayNotif)); ?>
-        </ul>
-      </a>
+    <a aria-label="notification" class="dropdown">
+      <button class="dropbtn notif"><?php echo count(getTodayTask($dbCo)); ?></button>
+      <ul class="dropdown-content">
+        <?php
+        $todayNotif = getTodayTask($dbCo);
+        echo (showTasktitle($todayNotif)); ?>
+      </ul>
+    </a>
 
 
     <form id="add-task" class="border-container write-task-form">
@@ -108,12 +108,43 @@ if (!isset($_SESSION['myToken'])) {
       <input class="js-task-id" type="hidden" name="task_id" value="">
       <textarea rows="auto" cols="100%" type="text" class="edit-task-title" id="task-title-textarea" name="task_title" required></textarea>
       <label for="start">Planning date:</label>
-      <input value="" type="date" name="Planning_date" class="js-Planning_date"/>
+      <input value="" type="date" name="Planning_date" class="js-Planning_date" />
+      <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
+    </form>
+  </template>
+
+  <template id="add-title-task-template">
+    <form class="edit-task-form" action="action.php" method="post">
+      <input type="hidden" name="myToken" value="<?= $_SESSION['myToken'] ?>">
+      <input type="hidden" name="action" value="edit">
+      <input class="js-task-id" type="hidden" name="task_id" value="">
+      <textarea rows="auto" cols="100%" type="text" class="edit-task-title" id="task-title-textarea" name="task_title" required></textarea>
+      <label for="start">Planning date:</label>
+      <input value="" type="date" name="Planning_date" class="js-Planning_date" />
       <button type="submit"><img src="/img/add.svg" alt="edit task"></button>
     </form>
   </template>
   <script type="module" src="scripts/script.js"></script>
 
+  <template id="add-title-task-template">
+    <li data-id="" class="border-container task-lst-item js-drage" draggable="true">
+      <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
+      <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" name="done" value="1" draggable="false">
+      <p class="js-task-title_txt" draggable="false"></p>
+      <time value="' . $task['planning_date'] . '" class="js-planning-date" datetime=""></time>
+      <button class="js-archive" data-archive-id='' draggable="false">
+        <img aria-hidden="true" src="/img/' . $iconName . '.svg" alt="$iconName task" draggable="false"></button>
+      <a href="action.php?action=up_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+        <img aria-hidden="true" src="/img/up_rank.svg" alt="priority task" draggable="false">
+      </a>
+      <a href="action.php?action=down_rank&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+        <img aria-hidden="true" src="/img/down_rank.svg" alt="priority task" draggable="false">
+      </a><a href="action.php?action=delete&id_task=' . $task['id_task'] . '&myToken=' . $_SESSION['myToken'] . '" draggable="false">
+        <img aria-hidden="true" src="/img/delete.svg" alt="delete task" draggable="false">
+      </a>
+    </li>;
+
+    <template>
 
 </body>
 
