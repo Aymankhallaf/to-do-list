@@ -119,13 +119,13 @@ function isServerOk(): bool
 
 
 
- /**
-  * verify the length of the task
-  *
-  * @param integer $maxNumber the maximum lenght of characters.
-  * @param string $taskTitle the task title
-  * @return void
-  */
+/**
+ * verify the length of the task
+ *
+ * @param integer $maxNumber the maximum lenght of characters.
+ * @param string $taskTitle the task title
+ * @return void
+ */
 function verifyNbChars(int $maxNumber, string $taskTitle): void
 {
     if (isset($taskTitle)) {
@@ -282,7 +282,7 @@ function showLsTasks(array $lsttasks): string
  * @param PDO $dbCo connection 
  * @return void
  */
-function addTask(PDO $dbCo, array $task ): void
+function addTask(PDO $dbCo, array $task): void
 {
 
     verifyNbChars(255, $task['titleTask']);
@@ -290,17 +290,21 @@ function addTask(PDO $dbCo, array $task ): void
         (title_task, creation_date, planning_date) VALUES 
         (:task_title, CURRENT_DATE(),:planning_date);");
 
-
     $bindValue = ([
         ':task_title' => htmlspecialchars($task['titleTask']),
         ':planning_date' => $task['planningDate']
     ]);
 
     $isInsertOk = $insertTask->execute($bindValue);
+    $taskId =  $insertTask->fetchALL();
 
     if ($isInsertOk) {
         echo json_encode([
-            'isOk' => $isInsertOk
+            'isOk' => $isInsertOk,
+            "idTask" => $dbCo->lastInsertId(),
+            "taskTitle" => htmlspecialchars($task['titleTask']),
+            "planningDate" => $task['planningDate']
+
         ]);
         $_SESSION['msg'] = 'insert_ok';
     } else {

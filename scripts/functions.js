@@ -4,7 +4,7 @@
  * @param {string} PlanningDate the planning date. 
  * @param {string} injectedId the id tag of the target injection location.
  */
-export function editTask(taskTitle, PlanningDate,injectedId) {
+export function editTask(taskTitle, PlanningDate, injectedId) {
     const template = document.getElementById("update-title-task-template");
     let clone = document.importNode(template.content, true);
     clone.getElementById("task-title-textarea").innerText = taskTitle;
@@ -29,7 +29,7 @@ export function listenToEditBtn(editButtons) {
             let txt = li.querySelector(".js-task-title_txt").innerText;
             let PlanningDate = li.querySelector('.js-planning-date').dateTime;
             li.innerText = '';
-            editTask(txt,PlanningDate, li.dataset.id);
+            editTask(txt, PlanningDate, li.dataset.id);
         });
 
     });
@@ -39,4 +39,16 @@ export function listenToEditBtn(editButtons) {
 
 
 
+export function addTaskHtml(task) {
+    const template = document.getElementById("show-task-template");
+    let clone = document.importNode(template.content, true);
+    console.log(clone)
+    console.log(clone.querySelector(".js-task-title-txt"))
+    clone.querySelector(".js-task-title-txt").innerText = task["taskTitle"];
+    clone.querySelector(".js-Planning_date").value = task["taskTitle"];
+    clone.querySelector(".js-Planning_date").datetime = task["planningDate"];
+    clone.querySelector(".js-task-id").value = task["idTask"];
+    const injected = document.getElementById("today-task-lst");
+    injected.appendChild(clone);
 
+}

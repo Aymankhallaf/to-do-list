@@ -63,25 +63,6 @@ document.querySelectorAll('[data-archive-id]').forEach(
 
 
 
-
-// async function getFormData() {
-
-//     document.getElementById("add-task").addEventListener('submit',
-//         function (e) {
-//             e.preventDefault();
-//             let newTask = {
-//                 action: "add",
-//                 myToken: document.getElementById("myToken").value,
-//                 titleTask: document.getElementById("task-title-textarea").value,
-//                 planningDate: document.getElementById("planning-date").value
-//             }
-//             console.log(newTask);
-//             return newTask
-
-//         });
-// }
-
-
 function addTask() {
     document.getElementById("add-task").addEventListener('submit',
         function (e) {
@@ -97,7 +78,8 @@ function addTask() {
                     console.log("error api data");
                     return;
                 }
-                
+                console.log(data);
+                // addTaskHtml(data);
 
 
             })
