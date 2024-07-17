@@ -127,16 +127,6 @@ if (!isset($_SESSION['myToken'])) {
     </form>
   </template>
 
-  <!-- <template id="show-task-template">
-        <li data-id="" class="border-container task-lst-item js-drage" draggable="true">
-          <label class="hide task-lst-item-done" for="done" draggable="false">done</label>
-          <input role="checkbox" class="task-lst-item-checkbox" type="checkbox" name="done" value="1" draggable="false">
-          <p class="js-task-title-txt" draggable="false"></p>
-          <time value="" class="js-planning-date" datetime=""></time>
-          <button class="js-archive" data-archive-id='' draggable="false">
-            <img aria-hidden="true" src="/img/'archive.svg" alt="archive" draggable="false"></button>
-        </li>
-        <template> -->
 
 
   <template id="show-task-template">

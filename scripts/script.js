@@ -1,4 +1,4 @@
-import { listenToEditBtn, addTaskHtml, archive } from './_functions.js'
+import { listenToEditBtn, addTaskHtml } from './_functions.js'
 
 
 const editButtons = document.querySelectorAll(".js-edit-task-title");
@@ -31,11 +31,32 @@ async function callApi(method, param) {
 }
 
 
+/**
+ * 
+ * @param {*} id 
+ */
+function archive(id) {
+    callApi('PUT', {
+        action: 'archive',
+        idTask: id,
+        token: document.getElementById("myToken").value
+    })
+        .then(data => {
+            if (!data.isOk) {
+                console.log("error api data");
+                return;
+            }
+            if (data.archive == "1") {
 
-document.querySelectorAll('[data-archive-id]').forEach(
-    (b) => b.addEventListener('click',
-        function (e) { archive(b.dataset.archiveId); }));
+                document.getElementById("terminated-tasks").prepend(document.querySelector("[data-id='" + data.id + "']"));
+            }
+            else if (data.archive == "0") {
+                document.getElementById("priority-task-lst").prepend(document.querySelector("[data-id='" + data.id + "']"));
+            }
 
+
+        })
+}
 
 
 function addTask() {
@@ -60,5 +81,15 @@ function addTask() {
             })
         })
 };
+
+
+document.querySelectorAll('[data-archive-id]').forEach(
+    (b) => b.addEventListener('click',
+        function (e) { 
+            console.log(b.dataset.archiveId);
+            archive(b.dataset.archiveId); }));
+
+
+
 
 addTask();

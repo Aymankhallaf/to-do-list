@@ -54,26 +54,3 @@ export function addTaskHtml(task) {
 
 
 
-export function archive(id) {
-
-    callApi('PUT', {
-        action: 'archive',
-        idTask: id,
-        token: document.getElementById("myToken").value
-    })
-        .then(data => {
-            if (!data.isOk) {
-                console.log("error api data");
-                return;
-            }
-            if (data.archive == "1") {
-
-                document.getElementById("terminated-tasks").prepend(document.querySelector("[data-id='" + data.id + "']"));
-            }
-            else if (data.archive == "0") {
-                document.getElementById("priority-task-lst").prepend(document.querySelector("[data-id='" + data.id + "']"));
-            }
-
-
-        })
-}
